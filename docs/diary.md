@@ -24,3 +24,12 @@ That's all for now.
 The first thing to do will be acquiring artifacts, like the GIFs of my projects working in action. Once I have this done, testing the view of the various GIFs will be much simpler. I think that would be an excellent place to jump in and get my feet wet with web development again.
 
 Until tomorrow.
+
+---
+## Annoyance
+### Wednesday, October 12th 4:41PM PST 2022
+---
+
+Before taking off yesterday, I somehow managed to completely break the SSH key configuration that I had established with the repository several weeks ago. So today, all my time was painstakingly spent figuring this out. It was pretty darn annoying, especially considering I had already set up a new key and had it working perfectly already. I could go into the details of what was wrong and how I eventually fixed it, but I'd rather not. My brain has had enough of this for today. I am off to the gym.
+
+At the very least, we made progress today. Pushes can now be made without issue to the remote repository, and things are up-to-date. We are in a good place for tomorrow. GAH
