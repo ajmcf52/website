@@ -33,3 +33,10 @@ Until tomorrow.
 Before taking off yesterday, I somehow managed to completely break the SSH key configuration that I had established with the repository several weeks ago. So today, all my time was painstakingly spent figuring this out. It was pretty darn annoying, especially considering I had already set up a new key and had it working perfectly already. I could go into the details of what was wrong and how I eventually fixed it, but I'd rather not. My brain has had enough of this for today. I am off to the gym.
 
 At the very least, we made progress today. Pushes can now be made without issue to the remote repository, and things are up-to-date. We are in a good place for tomorrow. GAH
+
+---
+## Progress.
+### Thursday, October 13th 5:27PM PST 2022
+---
+
+Decent steps were taken today. The site is starting to take shape. The header styling is nearly done. It's actually already starting to look a little bit like a website. Looking forward to making more progress tomorrow.

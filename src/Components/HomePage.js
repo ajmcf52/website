@@ -1,16 +1,14 @@
 import React from "react";
 import PropTypes from "prop-types";
-import { withStyles, createStyles } from "@material-ui/core/styles";
-
-const styles = () =>
-  createStyles({
-    homePage: {
-      display: "inline",
-    },
-  });
+import HomePageHeader from "./HomePageHeader";
+import "./css/HomePage.css";
 
 const HomePage = ({ classes }) => {
-  return <div className={classes.homePage}></div>;
+  return (
+    <div className="homePage">
+      <HomePageHeader />
+    </div>
+  );
 };
 
 HomePage.propTypes = {
