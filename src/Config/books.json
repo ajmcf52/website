@@ -1,8 +1,13 @@
 {
   "current": [
     {
-      "title": "The Immortality Key: The Secret History of the Religion with No Name",
-      "author": "Brian C. Muraresku"
+      "title": "The Pragmatic Programmer",
+      "author": "Andy Hunt and Dave Thomas",
+      "timeReading": 2
+    },
+    {
+      "title": "Lab Girl",
+      "author": "Hope Jahren"
     },
     {
       "title": "Principles for Dealing with the Changing World Order: Why Nations Succeed and Fail",
@@ -31,16 +36,23 @@
   ],
   "previous": [
     {
+      "title": "The Immortality Key: The Secret History of the Religion with No Name",
+      "author": "Brian C. Muraresku"
+    },
+    {
       "title": "The Happiness Advantage: How a Positive Brain Fuels Success in Work and Life",
-      "author": "Shawn Achor"
+      "author": "Shawn Achor",
+      "timesRead": 2
     },
     {
       "title": "Principles: Life and Work",
-      "author": "Ray Dalio"
+      "author": "Ray Dalio",
+      "timesRead": 2
     },
     {
       "title": "Atomic Habits: An Easy & Proven Way to Build Good Habits & Break Bad Ones",
-      "author": "James Clear"
+      "author": "James Clear",
+      "timesRead": 2
     },
     {
       "title": "12 Rules for Life: An Antidote to Chaos",
@@ -48,11 +60,13 @@
     },
     {
       "title": "Can't Hurt Me: Master Your Mind and Defy the Odds",
-      "author": "David Goggins"
+      "author": "David Goggins",
+      "timesRead": 3
     },
     {
       "title": "The Four Agreements: A Practical Guide to Personal Freedom",
-      "author": "Don Miguel Ruiz"
+      "author": "Don Miguel Ruiz",
+      "timesRead": 2
     },
     {
       "title": "The Seven Spiritual Laws of Success: A Practical Guide to the Fulfillment of Your Dreams",
@@ -72,7 +86,8 @@
     },
     {
       "title": "The Setup",
-      "author": "Dan Bilzerian"
+      "author": "Dan Bilzerian",
+      "timesRead": 2
     },
     {
       "title": "Rich Dad Poor Dad: What the Rich Teach Their Kids About Money That the Poor and Middle Class Do Not!",
@@ -100,7 +115,8 @@
     },
     {
       "title": "Einstein's Dreams",
-      "author": "Alan Lightman"
+      "author": "Alan Lightman",
+      "timesRead": 4
     }
   ],
   "future": [
