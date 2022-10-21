@@ -40,3 +40,15 @@ At the very least, we made progress today. Pushes can now be made without issue 
 ---
 
 Decent steps were taken today. The site is starting to take shape. The header styling is nearly done. It's actually already starting to look a little bit like a website. Looking forward to making more progress tomorrow.
+
+---
+## Roadblocks
+
+### Friday, October 21st 4:24PM PST
+---
+
+The past week, I have made considerable progress on my website development. I haven't actually really made commits as often as I should. Part of this is due to the fact that my output has been pretty small. In large part, this is due to me trying to figure out things that I actually want to have on my website. In fact, I have spent 2 to 3 days just brainstorming and writing potential things that I could have in a biography. I have become hyperconsumed with what others may think of me, instead of simply focusing on output.
+
+In essence, the homepage is pretty much done. All I really have to do at this point is put together a couple of supporting pages -- the reading list page and the page featuring my projects -- and I will be good to go.
+
+Moving forward (particularly this weekend), I need to be extremely goal-oriented, focusing on small milestones and precise things that I want to accomplish. In doing so, I can break down seemingly difficult tasks into smaller, much simpler tasks.

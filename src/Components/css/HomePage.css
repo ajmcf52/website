@@ -7,6 +7,74 @@
   width: 100%;
   height: 100%;
   margin: 0;
-  
+  overflow: scroll;
+}
 
+.hrule {
+  width: 75%;
+  color: black;
+  background-color: black;
+  height: 2px;
+  border-width: 0;
+}
+
+.scottGif {
+  float: left;
+}
+
+.aboutText {
+  position: relative;
+  z-index: 1;
+  margin: 0px 30px 0px 30px;
+  color: #b5a653;
+  top: 15%;
+}
+
+.aboutHeader {
+  margin: 0 0 -4vh 2em;
+  position: relative;
+  top: 5%;
+  right: 35%;
+  z-index: 1;
+  color: #b5a653;
+  font-style: italic;
+  font-size: x-large;
+}
+
+.box {
+  z-index: -1;
+  width: 50vw;
+  height: 100%;
+  background: url(https://s3-us-west-2.amazonaws.com/s.cdpn.io/t-690/star.svg);
+  background-size: 20px;
+  background-repeat: round;
+  resize: both;
+  position: relative;
+  min-width: 150px;
+  min-height: 60px;
+  display: flex;
+  flex-direction: column;
+  place-items: center;
+  left: 25%;
+}
+
+.box span {
+  position: relative;
+}
+
+.box::before {
+  z-index: -1;
+  content: "";
+  position: absolute;
+  top: 20px;
+  left: 20px;
+  right: 20px;
+  bottom: 20px;
+  background: #2c1540;
+}
+
+body {
+  margin: 0;
+  display: grid;
+  place-items: center;
 }

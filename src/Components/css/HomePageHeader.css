@@ -21,8 +21,8 @@
   text-indent: 30px;
   text-align: left;
   font-size: 17px;
-  font-family: Georgia, 'Times New Roman', Times, serif;
-  margin-right: 175px;
+  font-family: Georgia, "Times New Roman", Times, serif;
+  margin-right: 25em;
   margin-left: 20px;
 }
 .textChunk {
@@ -31,4 +31,22 @@
 .bottomHeaderChunk {
   text-align: left;
   margin-left: 30px;
+}
+
+.singleQuote {
+  font-style: italic;
+  font-size: x-large;
+  margin-right: 12em;
+  text-align: left;
+}
+
+.quotes {
+  margin: auto;
+  display: table-cell;
+  vertical-align: middle;
+}
+
+.quoteAuthor {
+  margin-top: -1em;
+  text-indent: 2em;
 }

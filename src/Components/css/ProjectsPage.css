@@ -1,0 +1,15 @@
+.projectPageTitle {
+  font-variant: small-caps;
+  font-weight: bolder;
+  font-size: x-large;
+  margin-left: 30px;
+  text-align: left;
+}
+
+.hrule {
+  width: 75%;
+  color: black;
+  background-color: black;
+  height: 2px;
+  border-width: 0;
+}

@@ -1,0 +1,49 @@
+# 10 reasons why software engineering is awesome.
+
+1. Compared to other engineering disciplines, software engineering 
+is extremely minimalist. A laptop, some looseleaf, and a brain
+are all the tools one needs to code. WiFi helps too.
+
+2. It's extremely accessible. Nearly anyone with a computer and a connection to the Internet
+can learn how to code, so long as they possess adequate drive
+and determination.
+
+3. Its pervasive reach across most, if not all industries lends itself
+to increased job security for those that are able to breach the field
+& land their first gig.
+
+4. In accordance with Moore's Law, the exponential rate of growth in
+fields that rely on hardware & software is clear as day. With rapid increases
+in technological complexity, the human race is trending toward making 
+increasingly cool sh*t. I like making cool sh*t.
+
+5. Like other things that rely on creativity, software engineering is a
+field that is purely limited by the faculty of imagination. Chances are,
+if something can be drafted in the abstract of someone's imagination, it
+can be physically brought to life with adequate time, consistency,
+resources and dedication. The vastness of room available in this global
+space of ideas is truly empowering.
+
+6. It's fun. Drafting a solution to a problem, testing it, and observing
+its correctness scratches an itch in my brain that I otherwise have
+a difficult time scratching.
+
+7. Part of me also enjoys the brutal, unforgiving side of software as well;
+the stretches of days with little to no progress. The sheer frustration of
+bashing one's head against an error. Conversely, the satisfaction I derive
+from cracking a software bug is proportional to the amount of time I take
+to solve it. In other words, the "ugly" part of software engineering is
+simply delayed gratification in action. This leads me to my last point...
+
+8. Software Engineering is an analogy for life. To make jumps of progress
+in either arena, one has to work through a "valley of disappointment"
+before things start looking up. This is true for any learned skill or
+practice, but in the case of software engineering, the valleys can be 
+particularly steep. By working through the valleys that are ever-present
+in software engineering, one effectively trains themselves in the practice 
+of working through short-term pain to get to long-term pleasure; or in
+other words, "embracing the suck". In doing so over time, our brains 
+actually rewire themselves to be more attracted to delayed gratification, 
+rather than instantaneous, which is truly marvelous for long-term success
+in any endeavor. This learned adaptation derived from programming is one
+that I am deeply grateful for.
