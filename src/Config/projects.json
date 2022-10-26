@@ -2,6 +2,23 @@
   {
     "name": "Chatter",
     "description": "a chat service written in Java",
-    "points": []
+    "points": [],
+    "github": "https://github.com/ajmcf52/chitchat"
+  },
+  {
+    "name": "Snake",
+    "description": "a classic game written in Python",
+    "points": [
+      "Achieved smooth, continuous movement with linear interpolation",
+      "Utilized a movement queue to accurately register successive, rapid key inputs",
+      "Minimized snake-tile positional changes via Linked List node displacement"
+    ],
+    "github": ""
+  },
+  {
+    "name": "Personal Website",
+    "description": "a website built using React.js",
+    "points": ["Deployed an interactive we"],
+    "github": "https://github.com/ajmcf52/website"
   }
 ]

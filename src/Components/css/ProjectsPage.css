@@ -1,7 +1,7 @@
 .projectPageTitle {
   font-variant: small-caps;
   font-weight: bolder;
-  font-size: x-large;
+  font-size: xx-large;
   margin-left: 30px;
   text-align: left;
 }
@@ -12,4 +12,10 @@
   background-color: black;
   height: 2px;
   border-width: 0;
+}
+
+.projectTitle {
+  font-size: x-large;
+  font-variant: small-caps;
+  text-align: left;
 }

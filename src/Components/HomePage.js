@@ -22,8 +22,8 @@ const HomePage = ({ classes }) => {
           <br />
           <br />
           <span className="textChunk">
-            Music-wise, the Viking Snow Yeti's palate is vast — from classical
-            and heavy metal, to drum & bass and rap. It mustn't be forgotten,
+            Music-wise, the Snow Yeti's palate is vast — from classical and
+            heavy metal, to drum & bass and rap. It mustn't be forgotten,
             however, that Andrew's true loyalty lies with classic rock: the
             sweet, golden nectar of the sixties and seventies. The gift that
             just keeps giving. Supertramp, Doobie Brothers, Fleetwood Mac, Dire
