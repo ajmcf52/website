@@ -265,6 +265,194 @@
             }
           }
         }
+      },
+      "BOOKS": {
+        "current": {
+          "active": [
+            {
+              "title": "The Pragmatic Programmer",
+              "author": "Andy Hunt and Dave Thomas",
+              "timeReading": 2
+            },
+            {
+              "title": "Lab Girl",
+              "author": "Hope Jahren"
+            },
+            {
+              "title": "Principles for Dealing with the Changing World Order: Why Nations Succeed and Fail",
+              "author": "Ray Dalio"
+            },
+            {
+              "title": "The Daily Stoic: 366 Meditations on Wisdom, Perseverance, and the Art of Living",
+              "author": "Ryan Holiday and Stephen Hanselman"
+            },
+            {
+              "title": "The 48 Laws of Power",
+              "author": "Robert Greene"
+            }
+          ],
+          "inactive": [
+            {
+              "title": "Jab, Jab, Jab, Right Hook: How to Tell Your Story in a Noisy Social World",
+              "author": "Gary Vaynerchuk"
+            },
+            {
+              "title": "Why We Sleep",
+              "author": "Matthew  Walker"
+            },
+            {
+              "title": "A Brief History of Time",
+              "author": "Stephen Hawking"
+            }
+          ]
+        },
+        "previous": [
+          {
+            "title": "The Immortality Key: The Secret History of the Religion with No Name",
+            "author": "Brian C. Muraresku"
+          },
+          {
+            "title": "The Happiness Advantage: How a Positive Brain Fuels Success in Work and Life",
+            "author": "Shawn Achor",
+            "timesRead": 2
+          },
+          {
+            "title": "Principles: Life and Work",
+            "author": "Ray Dalio",
+            "timesRead": 2
+          },
+          {
+            "title": "Atomic Habits: An Easy & Proven Way to Build Good Habits & Break Bad Ones",
+            "author": "James Clear",
+            "timesRead": 2
+          },
+          {
+            "title": "12 Rules for Life: An Antidote to Chaos",
+            "author": "Jordan B. Peterson"
+          },
+          {
+            "title": "Can't Hurt Me: Master Your Mind and Defy the Odds",
+            "author": "David Goggins",
+            "timesRead": 3
+          },
+          {
+            "title": "The Four Agreements: A Practical Guide to Personal Freedom",
+            "author": "Don Miguel Ruiz",
+            "timesRead": 2
+          },
+          {
+            "title": "The Seven Spiritual Laws of Success: A Practical Guide to the Fulfillment of Your Dreams",
+            "author": "Deepak Chopra"
+          },
+          {
+            "title": "The Art of Resilience: Strategies for an Unbreakable Mind and Body",
+            "author": "Ross Edgley"
+          },
+          {
+            "title": "How to Do the Work: Recognize Your Patterns, Heal from Your Past, and Create Your Self",
+            "author": "Nicole LePera"
+          },
+          {
+            "title": "Miracles",
+            "author": "C.S. Lewis"
+          },
+          {
+            "title": "The Setup",
+            "author": "Dan Bilzerian",
+            "timesRead": 2
+          },
+          {
+            "title": "Rich Dad Poor Dad: What the Rich Teach Their Kids About Money That the Poor and Middle Class Do Not!",
+            "author": "Robert T. Kiyosaki"
+          },
+          {
+            "title": "Think and Grow Rich: This Book Could Be Worth a Million Dollars to You",
+            "author": "Napoleon Hill"
+          },
+          {
+            "title": "1984",
+            "author": "George Orwell"
+          },
+          {
+            "title": "The Problem of God: Answering a Skeptic's Challenges to Christianity",
+            "author": "Mark Clark"
+          },
+          {
+            "title": "The Hitchhiker's Guide to the Galaxy",
+            "author": "Douglas Adams"
+          },
+          {
+            "title": "The Lord of the Rings (Complete Set)",
+            "author": "J.R.R. Tolkien"
+          },
+          {
+            "title": "Einstein's Dreams",
+            "author": "Alan Lightman",
+            "timesRead": 4
+          }
+        ],
+        "future": [
+          {
+            "title": "The Road to Eleusis: Unveiling the Secret of the Mysteries",
+            "author": "R. Gordon Wasson, Albert Hofmann, and Carl A. P. Ruck"
+          },
+          {
+            "title": "The Gulag Archipelago",
+            "author": "Aleksandr Solzhenitsyn"
+          },
+          {
+            "title": "Meditations",
+            "author": "Marcus Aurelius"
+          },
+          {
+            "title": "The Sacred Mushroom and The Cross: A study of the nature and origins of Christianity within the fertility cults of the ancient Near East",
+            "author": "John M. Allegro"
+          },
+          {
+            "title": "The Dead Sea Scrolls and the Christian Myth",
+            "author": "John M. Allegro"
+          },
+          {
+            "title": "Zero to One: Notes on Startups, or How to Build the Future",
+            "author": "Peter Thiel and Blake Masters"
+          },
+          {
+            "title": "Structures: Or Why Things Don't Fall Down",
+            "author": "J. E. Gordon"
+          },
+          {
+            "title": "How to Win Friends and Influence People",
+            "author": "Dale Carnegie"
+          },
+          {
+            "title": "Lives of the Stoics: The Art of Living from Zeno to Marcus Aurelius",
+            "author": "Ryan Holiday and Stephen Hanselman"
+          },
+          {
+            "title": "The 4-Hour Workweek",
+            "author": "Timothy Ferriss"
+          },
+          {
+            "title": "The Thank You Economy",
+            "author": "Gary Vaynerchuk"
+          },
+          {
+            "title": "Crushing It!: How Great Entrepreneurs Build Their Business and Influence―and How You Can, Too",
+            "author": "Gary Vaynerchuk"
+          },
+          {
+            "title": "Crush It!: Why NOW Is the Time to Cash In on Your Passion",
+            "author": "Gary Vaynerchuk"
+          },
+          {
+            "title": "#AskGaryVee: One Entrepreneur's Take on Leadership, Social Media, and Self-Awareness",
+            "author": "Gary Vaynerchuk"
+          },
+          {
+            "title": "Twelve and a Half: Leveraging the Emotional Ingredients Necessary for Business Success",
+            "author": "Gary Vaynerchuk"
+          }
+        ]
       }
     }
   }
