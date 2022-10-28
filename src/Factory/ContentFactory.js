@@ -1,8 +1,10 @@
 import React from "react";
-import { getTabMenu, getTabPanels } from "./TabFactory";
 import { Tabs } from "react-web-tabs";
 import { createStyles } from "@material-ui/styles";
+import { getTabMenu, getTabPanels } from "./TabFactory";
 
+import AboutMeText from "../Config/aboutme.txt";
+// const fs = require("fs");
 /*
 Factory responsible for computing and returning actual
 raw content that will appear on panels.
@@ -13,43 +15,44 @@ const delims = {
   plain: "p",
   list: "h",
   link: "l",
-  compound: "c"
+  compound: "c",
+  textfile: "textfile",
 };
 
 const styles = createStyles({
   plainTxt: {
-    overflowWrap: "normal"
+    overflowWrap: "normal",
   },
   linkTxt: {
     overflowWrap: "normal",
-    display: "inline"
+    display: "inline",
   },
   titleTxt: {
-    fontFamily: "Courier New, Courier, monospace"
+    fontFamily: "Courier New, Courier, monospace",
   },
   titleBox: {
     marginTop: "15px",
-    marginLeft: "15px"
+    marginLeft: "15px",
   },
   contentBox: {
     paddingLeft: "15px",
-    paddingRight: "15px"
+    paddingRight: "15px",
   },
   headerTxt: {
-    fontWeight: "bold"
+    fontWeight: "bold",
   },
   listStyling: {
-    listStyleType: "none"
+    listStyleType: "none",
   },
   listBox: {
     marginTop: "2%",
-    marginLeft: "2%"
+    marginLeft: "2%",
   },
   plainPanel: {
     display: "flex",
     flexDirection: "column",
-    textAlign: "left"
-  }
+    textAlign: "left",
+  },
 });
 
 export const getInfoCardContent = (tabs, currentTab, tabStr) => {
@@ -83,7 +86,7 @@ const getTextStyling = (content, chunk) => {
     display: content[chunk].inline ? "inline" : "block",
     fontWeight: content[chunk].b ? "bold" : "normal",
     fontStyle: content[chunk].i ? "italic" : "normal",
-    textDecoration: content[chunk].u ? "underline" : "none"
+    textDecoration: content[chunk].u ? "underline" : "none",
   };
   if (content[chunk].size) style["fontSize"] = content[chunk].size;
 
@@ -97,7 +100,7 @@ const getTextBoxStyling = (content, chunk) => {
   const style = {
     overflowWrap: "normal",
     marginTop: content[chunk].subheader ? "-10px" : "0px",
-    paddingBottom: content[chunk].endOfHeader ? "20px" : "0px"
+    paddingBottom: content[chunk].endOfHeader ? "20px" : "0px",
   };
 
   return style;
@@ -109,8 +112,8 @@ const getTextBoxStyling = (content, chunk) => {
  * This method switches on the content delimiter,
  * returning the content in an appropriate fashion.
  */
-export const getContent = content => {
-  return Object.keys(content).map(chunk => {
+export function getContent(content) {
+  return Object.keys(content).map((chunk) => {
     switch (chunk.split("-")[0]) {
       case delims.plain:
         return getPlainText(content, chunk);
@@ -126,12 +129,18 @@ export const getContent = content => {
 
       case delims.compound:
         return getCompoundElement(content, chunk);
-
+      case delims.textfile:
+        //let result = await getTextfileContents(content, chunk);
+        return fetch(AboutMeText)
+          .then((r) => r.text())
+          .then((text) => {
+            return text;
+          });
       default:
         return null;
     }
   });
-};
+}
 
 /**
  * generates plain text.
@@ -142,9 +151,8 @@ const getPlainText = (content, chunk) => {
       <p
         style={{
           ...styles.plainTxt,
-          ...getTextStyling(content, chunk)
-        }}
-      >
+          ...getTextStyling(content, chunk),
+        }}>
         {content[chunk].text}
       </p>
     </div>
@@ -170,7 +178,7 @@ const getListText = (content, chunk) => {
     <div style={styles.listBox}>
       <header style={styles.headerTxt}>{content[chunk].head}</header>
       <ul style={styles.listStyling}>
-        {Object.keys(content[chunk].items).map(key => {
+        {Object.keys(content[chunk].items).map((key) => {
           return (
             <li style={styles.listItemTxt}>{content[chunk].items[key]}</li>
           );
@@ -189,9 +197,8 @@ const getTitleText = (content, chunk) => {
       <p
         style={{
           ...styles.titleTxt,
-          ...getTextStyling(content, chunk)
-        }}
-      >
+          ...getTextStyling(content, chunk),
+        }}>
         {content[chunk].text}
       </p>
     </div>
@@ -204,7 +211,7 @@ const getTitleText = (content, chunk) => {
 const getCompoundElement = (content, chunk) => {
   return (
     <p style={{ display: "inline" }}>
-      {Object.keys(content[chunk].items).map(el => {
+      {Object.keys(content[chunk].items).map((el) => {
         //link text (return anchor)
         if (el.split("-")[0] === delims.link) {
           return getLinkText(content[chunk].items, el);
@@ -217,3 +224,19 @@ const getCompoundElement = (content, chunk) => {
     </p>
   );
 };
+
+async function getTextfileContents(content, chunk) {
+  let filepath = content[chunk].path;
+  let file = new File([""], filepath);
+  let result = await readFileURL(file);
+  return result;
+}
+
+async function readFileURL(file) {
+  let result = await new Promise((resolve) => {
+    let fileReader = new FileReader();
+    fileReader.onload = (e) => resolve(fileReader.result);
+    fileReader.readAsDataURL(file);
+  });
+  return result;
+}

@@ -5,10 +5,10 @@
       "alt": "Headshot"
     },
     "name": {
-      "value": "Andrew McFarlane"
+      "value": "Andrew (A.J.) McFarlane"
     },
     "blurb": {
-      "value": "Software Engineer based out of Langley, BC"
+      "value": "Software Engineer based out of Whiterock, BC"
     },
 
     "icons": {
@@ -48,26 +48,8 @@
             "inline": true,
             "size": "32px"
           },
-          "p-0": {
-            "text": "A soldier in the shadows, a silver fin in the river; I need no introduction and wouldn’t want one either."
-          },
-          "p-1": {
-            "text": "Above all I am a builder, stacking thoughts far and wide. Making sense of what we have before I turn and wither."
-          },
-          "p-2": {
-            "text": "Being great is no small feat. It is rather difficult and tough. Rejection and defeat flow over brim, staining wood ‘neath my cup. Truth is we must fail to succeed. Fuel work with passion, fail fast, and the sky is your sea."
-          },
-          "p-3": {
-            "text": "Control what you can and take each day as it comes. Be present each day, note all here from. I never partied as much as I’d have liked, this much is true; For long it was sacrifice, now it is imbued."
-          },
-          "p-4": {
-            "text": "No rest for the wary in this world of ours. Time waits for none, so help yourself and make haste with yours. Seduced by submersion, waves lapping at the brow; Imagine what’s possible with grit and a little know-how."
-          },
-          "p-5": {
-            "text": "Truth is, we are all great in many way, shape, or form; some don’t know it yet, some prefer the norm. Artist, author, teacher, engineer, each talented many a way, enriching the world with gifts borne."
-          },
-          "p-6": {
-            "text": "Partying and clubbing was never that cool, it was just something to do. Besides, why club when you can code and drink beer too?"
+          "textfile-0": {
+            "path": "file:///Users/ajm/Projects/in_progress/website/src/Config/aboutme.txt"
           }
         }
       },

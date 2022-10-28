@@ -15,7 +15,7 @@ const styles = () =>
       height: "220px",
       width: "220px",
       borderRadius: "50%",
-      border: "3px solid black"
+      border: "3px solid black",
     },
     profileInfo: {
       display: "flex",
@@ -24,35 +24,35 @@ const styles = () =>
       minHeight: "0px",
       height: "auto",
       justifyContent: "space-between",
-      alignItems: "center"
+      alignItems: "center",
     },
     nameAndBlurb: {
       display: "flex",
-      flexDirection: "column"
+      flexDirection: "column",
     },
     name: {
       display: "inline",
       overflowWrap: "normal",
       minHeight: "0px",
-      height: "auto"
+      height: "auto",
     },
     blurb: {
       position: "relative",
       bottom: window.innerWidth >= 700 ? "0px" : "70px",
       right: "15px",
       display: "inline",
-      overflowWrap: "normal"
+      overflowWrap: "normal",
     },
     nameTxt: {
       fontFamily: "Georgia, serif",
       fontSize: "40px",
       display: "inline",
-      position: "relative"
+      position: "relative",
     },
     quickLinks: {
       display: "flex",
       marginTop: window.innerWidth >= 700 ? "25%" : "0px",
-      minWidth: "0px"
+      minWidth: "0px",
     },
     smallIcon: {
       width: "45px",
@@ -61,8 +61,8 @@ const styles = () =>
       position: "relative",
       backgroundColor: "transparent",
       marginLeft: "10px",
-      marginRight: "10px"
-    }
+      marginRight: "10px",
+    },
   });
 
 const rootStyle = {
@@ -76,12 +76,12 @@ const rootStyle = {
   border: "3px solid black",
   transition: "margin-top .5s ease-out",
   padding: "10px",
-  minWidth: "0px",
-  maxWidth: window.innerWidth < 700 ? "95vw" : "650px",
-  margin: "0 auto"
+  minWidth: window.innerWidth < 700 ? "95vw" : "60%",
+  maxWidth: window.innerWidth < 700 ? "95vw" : "80%",
+  margin: "0 auto",
 };
 
-const Profile = props => {
+const Profile = (props) => {
   const { classes, profile, tab } = props;
   if (profile) {
     //larger view (desktop, ipad)
@@ -143,17 +143,14 @@ const Profile = props => {
 Profile.propTypes = {
   classes: PropTypes.any,
   profile: PropTypes.any,
-  tab: PropTypes.any
+  tab: PropTypes.any,
 };
 
 const mapStateToProps = (state, props) => ({
   profile: state && state.config && state.config.profile,
-  tab: state && state.tab && state.tab.openTab
+  tab: state && state.tab && state.tab.openTab,
 });
 
-const connectedProfile = connect(
-  mapStateToProps,
-  null
-)(Profile);
+const connectedProfile = connect(mapStateToProps, null)(Profile);
 
 export default withStyles(styles)(connectedProfile);

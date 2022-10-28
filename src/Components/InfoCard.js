@@ -12,7 +12,7 @@ import { TAB_STR, ProfileBackgroundColor } from "../Constants";
  * The card that pops up when a tab from the top bar is selected.
  */
 
-const windowStyle = openTab =>
+const windowStyle = (openTab) =>
   createStyles({
     root: {
       display: openTab === "none" ? "none" : "flex",
@@ -30,22 +30,32 @@ const windowStyle = openTab =>
       width: "auto",
       maxWidth: "95vw",
       position: "relative",
-      bottom: "3%"
-    }
+      bottom: "3%",
+    },
   });
 
 const styles = () =>
   createStyles({
     exitIcon: {
       zIndex: "-1",
-      position: "relative"
-    }
+      position: "relative",
+    },
+    aboutMeSpan: {
+      margin: "15px 0 0 0",
+    },
   });
 
 function InfoCard(props) {
-  const { classes, tabs, currentTab } = props;
+  const { classes, tabs, currentTab, aboutMe } = props;
 
-  return (
+  return currentTab === "ABOUT" ? (
+    <div style={windowStyle(currentTab).root}>
+      <span style={styles.aboutMeSpan}>{aboutMe}</span>
+      <IconButton onClick={() => props.hideTab()} className={classes.exitIcon}>
+        <CloseIcon />
+      </IconButton>
+    </div>
+  ) : (
     <div style={windowStyle(currentTab).root}>
       {getInfoCardContent(tabs, currentTab, TAB_STR)}
       <IconButton onClick={() => props.hideTab()} className={classes.exitIcon}>
@@ -58,22 +68,20 @@ function InfoCard(props) {
 InfoCard.propTypes = {
   tabs: PropTypes.object,
   currentTab: PropTypes.string,
-  classes: PropTypes.any
+  classes: PropTypes.any,
 };
 
 const mapStateToProps = (state, props) => ({
   currentTab: state && state.tab && state.tab.openTab,
   tabs:
-    state && state.config && state.config.profile && state.config.profile.tabs
+    state && state.config && state.config.profile && state.config.profile.tabs,
+  aboutMe: state.aboutMe.text,
 });
 
 const mapDispatchToProps = {
-  hideTab: TabEventCreator.hideTab
+  hideTab: TabEventCreator.hideTab,
 };
 
-const connectedCard = connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(InfoCard);
+const connectedCard = connect(mapStateToProps, mapDispatchToProps)(InfoCard);
 
 export default withStyles(styles)(connectedCard);

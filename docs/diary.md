@@ -71,3 +71,18 @@ There are a few reasons for this.
 - Lastly, I started pushing commits on a new git branch without even really thinking about the totality of changes that I wanted to bring in to my website. Looking at the situation now, I would be infinitely better off by simply adding to and modifying the existing code base, instead of deleting existing code and starting anew. As of today, I will be working off of the "main" branch, manually incorporating desirable changes from the "minimal" branch.
 
 This is where we're at as of now. With a good direction on paper, I am optimistic. Sure, the website is going to take longer than I bargained to get up and running, but that's okay. The important thing is for me to adapt, improvise and overcome. Yeti out.
+
+---
+
+## Significant Progress
+### Thursday, October 27th 4:56PM PST
+
+---
+
+Although it may not seem like much, big steps were taken today. After having not touched React/Redux for awhile, I was able to write a reducer to preemptively load an 'About Me' text file (similar to how I load the config.json file), and use the contents of said text file to populate the 'About Me' dropdown window.
+
+Before going with the standard "require()", I went through several other options, including FileReader() and fs.readFileSync(); to avoid not reading the text file in time, I simply read the text file contents alongside the config.json file in DataRef.
+
+Initially, I was going to try using the same reducer for each files, and out of desire to not disrupt the state config, I opted to simply use another reducer. Seems to work nicely.
+
+Tomorrow, we will be spending some time styling our components in a more fashionable manner (i.e., ensure text is fitting inside the given window, etc).
