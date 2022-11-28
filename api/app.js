@@ -1,21 +1,17 @@
-var http = require("http");
 var createError = require("http-errors");
 var express = require("express");
 var path = require("path");
 var cookieParser = require("cookie-parser");
 var logger = require("morgan");
 var cors = require("cors");
-var mysql = require("mysql2");
 var axios = require("axios");
 
-var dbConfig = require("./config/dbConfig");
+//var dbConfig = require("./config/dbConfig");
 
 axios.defaults.headers.post["Content-Type"] = "multipart/form-data";
 // axios.post("/register");
 
 var indexRouter = require("./routes/index");
-var usersRouter = require("./routes/users");
-var testAPIRouter = require("./routes/testAPI");
 var customerAPI = require("./routes/customerAPI");
 
 var app = express();
@@ -58,13 +54,11 @@ app.use(function (err, req, res, next) {
   res.render("error");
 });
 
-const db = mysql.createConnection(dbConfig);
-db.connect((err) => {
-  if (err) {
-    return err;
-  }
-});
-
-console.log(db);
+// const connection = mysql.createConnection(dbConfig);
+// connection.connect((err) => {
+//   if (err) {
+//     return err;
+//   }
+// });
 
 module.exports = app;

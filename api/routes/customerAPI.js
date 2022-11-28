@@ -1,8 +1,10 @@
 var express = require("express");
 var bcrypt = require("bcrypt");
+// var mysql = require("mysql2");
+// var dbConfig = require("../config/dbConfig");
+var connection = require("../config/connection");
+
 var router = express.Router();
-var mysql = require("mysql2");
-var dbConfig = require("../config/dbConfig");
 
 /* 
 The following article was tremendously helpful in setting
@@ -17,28 +19,26 @@ The following article helped tremendously in rendering the code in my
 */
 
 router.post("/signup", async (req, res) => {
-  console.log("wow!!!!!");
-  console.log("REQ BODY IS ", req.body);
   const name = req.body.name;
   const email = req.body.email;
   const pword = req.body.password;
-
+  var salt = "";
+  var hash = "";
   const hashPword = async (password, saltRounds = 10) => {
-    const salt = await bcrypt.genSalt(saltRounds);
-    console.log("PWORD -> ", password, " SALT -> ", salt);
+    salt = await bcrypt.genSalt(saltRounds);
+    console.log("salt length -> ", salt.length);
     return await bcrypt.hash(password, salt);
   };
-  var hash = "";
+
   const insertToDb = async () => {
     hash = await hashPword(pword);
-    console.log("hash length is: " + hash.length);
-    //res.json({ hash: hashPword });
-    var connection = mysql.createConnection(dbConfig);
-    var sql = `INSERT INTO USER(email, name, pword) VALUES(?, ?, ?);
+    console.log("hash length -> ", hash.length);
+    //var connection = mysql.createConnection(dbConfig);
+    var sql = `INSERT INTO USER(email, name, pword, salt) VALUES(?, ?, ?, ?);
                INSERT INTO CUSTOMER (email, address, phone_no) VALUES (?, ?, ?)`;
     connection.query(
       sql,
-      [email, name, hash, email, undefined, undefined],
+      [email, name, hash, salt, email, undefined, undefined],
       (err) => {
         if (err) {
           throw err;
@@ -46,9 +46,12 @@ router.post("/signup", async (req, res) => {
         res.send("user table updated!");
       }
     );
-    connection.end();
   };
   await insertToDb();
+});
+
+router.post("/login", async (req, res) => {
+  const { email, password } = req.body;
 });
 
 module.exports = router;

@@ -1,4 +1,3 @@
-var mysql = require("mysql2");
 var dbConfig = {
   host: "localhost",
   user: "root",
