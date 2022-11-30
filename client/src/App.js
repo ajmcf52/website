@@ -2,7 +2,7 @@ import React, { Component } from "react";
 import logo from "./logo.svg";
 import "./App.css";
 import axios from "axios";
-import SignupForm from "./components/SignupForm";
+import SignupForm from "./components/forms/SignupForm";
 /**
  * Disclaimer(s):
  *
