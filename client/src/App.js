@@ -1,13 +1,10 @@
-import React, { Component } from "react";
-import logo from "./logo.svg";
+import React, { Component, Suspense, lazy } from "react";
 import "./App.css";
-import axios from "axios";
-import SignupForm from "./components/forms/SignupForm";
-/**
- * Disclaimer(s):
- *
- * Sign-up form code was borrowed from a freecodecamp article.
- */
+import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
+
+const Home = lazy(() => import("./components/main/Home"));
+const SignupForm = lazy(() => import("./components/forms/SignupForm"));
+const LoginForm = lazy(() => import("./components/forms/LoginForm"));
 
 class App extends Component {
   constructor(props) {
@@ -25,10 +22,18 @@ class App extends Component {
 
   render() {
     return (
-      <div className="App">
-        <SignupForm />
-        <p>{this.state.apiResponse}</p>
-      </div>
+      <main>
+        <Router>
+          <Suspense fallback={<div>Loading...</div>}>
+            <Routes>
+              <Route path="/" element={<Home />} />
+              <Route path="/login" element={<LoginForm />} />
+              <Route path="/signup" element={<SignupForm />} />
+              <Route element={Error} />
+            </Routes>
+          </Suspense>
+        </Router>
+      </main>
     );
   }
 }
