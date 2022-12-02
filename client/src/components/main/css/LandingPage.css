@@ -1,0 +1,65 @@
+body {
+    background-color: transparent;
+}
+
+.home-root {
+    background-color: #7d7d79;
+    position: absolute;
+    top: 0px;
+    right: 0px;
+    left: 0px;
+    bottom: 0px;
+}
+
+.inner-root {
+    background-color: #595654;
+    position: absolute;
+    top: 8px;
+    right: 8px;
+    left: 8px;
+    bottom: 8px;
+    border-radius: 25px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+.shoester-span {
+    font-family: "Bebas Neue";
+    font-size: 100px;
+    font-variant: small-caps;
+    color: #d9bdd4;
+}
+
+.shoester-h1 {
+    font-variant: small-caps;
+    text-align: center;
+    color: #dbb8a2;
+    font-size: 60px;
+    margin: -100px 0 100px 0;
+}
+
+.main-nav {
+    display: flex;
+    flex-direction: row-reverse;
+    align-items: center;
+    position: fixed;
+    top: 0px;
+    left: 0px;
+    right: 0px;
+    height: 48px;
+    background-color: #2b2928;
+    z-index: 1;
+}
+
+.btn-stack {
+    position: relative;
+    right: 20px;
+}
+
+.shopBtn {
+    min-height: 75px;
+    width: 150px;
+    margin: 100px 0 -100px 0;
+}

@@ -1,98 +1,103 @@
 @import url("https://fonts.googleapis.com/css2?family=Lato&display=swap");
 
 body {
-  box-sizing: border-box;
-  margin: 0;
-  padding: 0;
-  background-color: white;
-  font-family: "lato", sans-serif;
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    background-color: #7d7d79;
+    font-family: "Bebas Neue", "lato", sans-serif;
 }
 
 .form-container {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
 }
 
 .form-sign-up {
-  background-color: white;
-  width: 400px;
-  border-radius: 8px;
-  padding: 20px 40px;
-  box-shadow: 0 10px 25px rgba(92, 99, 105, 0.2);
+    background-color: white;
+    width: 400px;
+    border-radius: 8px;
+    padding: 20px 40px;
+    box-shadow: 0 10px 25px rgba(92, 99, 105, 0.2);
 }
 
 .title {
-  font-size: 50px;
-  margin-bottom: 50px;
+    font-size: 50px;
+    margin-bottom: 50px;
 }
 
 .input-container {
-  position: relative;
-  height: 45px;
-  width: 90%;
-  margin-bottom: 17px;
+    position: relative;
+    height: 45px;
+    width: 90%;
+    margin-bottom: 17px;
 }
 
 .field {
-  position: absolute;
-  top: 0px;
-  left: 0px;
-  height: 100%;
-  width: 100%;
-  border: 1px solid #dadce0;
-  border-radius: 7px;
-  font-size: 16px;
-  padding: 0 20px;
-  outline: none;
-  background: none;
-  z-index: 1;
+    position: absolute;
+    top: 0px;
+    left: 0px;
+    height: 100%;
+    width: 100%;
+    border: 1px solid #dadce0;
+    border-radius: 7px;
+    font-size: 16px;
+    padding: 0 20px;
+    outline: none;
+    background: none;
+    z-index: 1;
 }
 
 ::placeholder {
-  color: transparent;
+    color: transparent;
 }
 
 .input-label {
-  position: absolute;
-  top: 15px;
-  left: 15px;
-  padding: 0 4px;
-  background-color: white;
-  color: #dadce0;
-  font-size: 16px;
-  transition: 0.5s;
-  z-index: 0;
+    position: absolute;
+    top: 15px;
+    left: 15px;
+    padding: 0 4px;
+    background-color: white;
+    color: #dadce0;
+    font-size: 16px;
+    transition: 0.5s;
+    z-index: 0;
 }
 
 .submit-button {
-  display: block;
-  margin-left: auto;
-  padding: 15px 30px;
-  border: none;
-  background-color: purple;
-  color: white;
-  border-radius: 6px;
-  cursor: pointer;
-  font-size: 16px;
-  margin-top: 30px;
+    display: block;
+    margin-left: auto;
+    padding: 15px 30px;
+    border: none;
+    background-color: purple;
+    color: white;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 16px;
+    margin-top: 30px;
 }
 
 .submit-button:hover {
-  background-color: #9867c5;
-  transform: translateY(-2px);
+    background-color: #9867c5;
+    transform: translateY(-2px);
 }
 
 .field:focus + .input-label {
-  top: -7px;
-  left: 3px;
-  z-index: 10;
-  font-size: 14px;
-  font-weight: 600;
-  color: purple;
+    top: -7px;
+    left: 3px;
+    z-index: 10;
+    font-size: 14px;
+    font-weight: 600;
+    color: purple;
 }
 
 .field:focus {
-  border: 2px solid purple;
+    border: 2px solid purple;
+}
+
+@font-face {
+    font-family: "Bebas Neue";
+    src: url("../fonts/Bebas_Neue/BebasNeue-Regular.ttf");
 }
