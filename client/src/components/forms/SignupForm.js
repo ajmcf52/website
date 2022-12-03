@@ -2,7 +2,6 @@ import React from "react";
 import axios from "axios";
 import { alpha, styled } from "@mui/material/styles";
 import TextField from "@mui/material/TextField";
-// import "./SignupForm.css";
 
 const StyledField = styled(
   (
@@ -44,15 +43,13 @@ export default class SignupForm extends React.Component {
   }
 
   handleChange = (evt) => {
-    console.log("value: " + evt.target.value);
-    this.setState((prevState) => ({
+    this.setState(() => ({
       [evt.target.name]: evt.target.value,
     }));
   };
 
   handleSubmit = (evt) => {
     evt.preventDefault();
-    console.log("state is !!!: " + this.state);
     const { fname, lname, email, password } = this.state;
     const name = fname + " " + lname;
     axios
@@ -127,17 +124,6 @@ export default class SignupForm extends React.Component {
               variant="outlined"
               name="password"
             />
-            {/* <label className="input-label" htmlFor="password">
-              Password
-            </label>
-            <input
-              type="password"
-              id="password"
-              className="field"
-              defaultValue={""}
-              name="password"
-              placeholder="a"
-              onChange={this.handleChange}></input> */}
           </div>
           <input
             type="submit"

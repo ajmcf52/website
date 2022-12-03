@@ -1,16 +1,13 @@
 import React from "react";
-import {
-    createTheme,
-    ThemeProvider,
-    styled,
-    Theme,
-} from "@mui/material/styles";
-import Button from "@mui/material/Button";
+import { createTheme, ThemeProvider } from "@mui/material/styles";
 import Stack from "@mui/material/Stack";
 import { useNavigate } from "react-router-dom";
+import { StyledButton } from "../buttons/StyledButton";
+import SignupButton from "../buttons/SignupButton";
+import LoginButton from "../buttons/LoginButton";
 import "./css/LandingPage.css";
 
-const navbarBtnTheme = createTheme({
+const navBarBtnTheme = createTheme({
     palette: {
         primary: {
             main: "#4d3c32",
@@ -36,43 +33,13 @@ const shopBtnTheme = createTheme({
     },
 });
 
-export const StyledButton = styled(Button)(({ theme }) => ({
-    maxHeight: "35px",
-    border: "1px solid #8a7169",
-    fontFamily: "Bebas Neue",
-    "&:hover, &.Mui-focusVisible": {
-        color: "#f0c8b1",
-    },
-    "&.Mui-active": {
-        color: theme.palette.secondary.main,
-    },
-}));
-
 export const NavBar = (props) => {
-    const { theme } = props;
-    let navigate = useNavigate();
+    const { theme, buttons } = props;
     return (
         <div className="main-nav">
             <ThemeProvider theme={theme}>
                 <Stack direction="row" spacing={2} className="btn-stack">
-                    <StyledButton
-                        color="primary"
-                        className="btn btn-login"
-                        variant="contained"
-                        onClick={() => {
-                            navigate("/login");
-                        }}>
-                        Login
-                    </StyledButton>
-                    <StyledButton
-                        className="btn btn-register"
-                        color="primary"
-                        variant="contained"
-                        onClick={() => {
-                            navigate("/signup");
-                        }}>
-                        Register
-                    </StyledButton>
+                    {buttons}
                 </Stack>
             </ThemeProvider>
         </div>
@@ -83,7 +50,10 @@ export default function LandingPage() {
     let navigate = useNavigate();
     return (
         <div className="home-root">
-            <NavBar theme={navbarBtnTheme} />
+            <NavBar
+                theme={navBarBtnTheme}
+                buttons={[<LoginButton />, <SignupButton />]}
+            />
             <div className="inner-root">
                 <h1 className="shoester-h1">
                     Welcome to {<br />}

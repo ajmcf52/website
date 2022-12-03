@@ -1,0 +1,12 @@
+.main-nav {
+    display: flex;
+    flex-direction: row-reverse;
+    align-items: center;
+    position: fixed;
+    top: 0px;
+    left: 0px;
+    right: 0px;
+    height: 48px;
+    background-color: #453229;
+    z-index: 1;
+}
