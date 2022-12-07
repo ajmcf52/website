@@ -4,12 +4,13 @@ import { createTheme } from "@mui/material/styles";
 import { NavBar } from "./LandingPage";
 import LoginButton from "../buttons/LoginButton";
 import SignupButton from "../buttons/SignupButton";
+import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
 
 const navShopBtnTheme = createTheme({
     palette: {
         primary: {
-            main: "#65256b",
-            contrastText: "#f2a50a",
+            main: "#deceaf",
+            contrastText: "#4e0954",
         },
         secondary: {
             main: "#c26dc9",

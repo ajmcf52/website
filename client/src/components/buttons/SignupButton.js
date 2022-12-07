@@ -1,4 +1,4 @@
-import { StyledButton } from "./StyledButton";
+import { StyledButton } from "./styled/StyledButton";
 import { useNavigate } from "react-router-dom";
 
 export default function SignupButton(props) {

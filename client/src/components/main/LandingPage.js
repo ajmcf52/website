@@ -1,8 +1,9 @@
 import React from "react";
+import axios from "axios";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 import Stack from "@mui/material/Stack";
-import { useNavigate } from "react-router-dom";
-import { StyledButton } from "../buttons/StyledButton";
+import { Redirect } from "react-router-dom";
+import { StyledButton } from "../buttons/styled/StyledButton";
 import SignupButton from "../buttons/SignupButton";
 import LoginButton from "../buttons/LoginButton";
 import "./css/LandingPage.css";
@@ -46,32 +47,72 @@ export const NavBar = (props) => {
     );
 };
 
-export default function LandingPage() {
-    let navigate = useNavigate();
-    return (
-        <div className="home-root">
-            <NavBar
-                theme={navBarBtnTheme}
-                buttons={[<LoginButton />, <SignupButton />]}
-            />
-            <div className="inner-root">
-                <h1 className="shoester-h1">
-                    Welcome to {<br />}
-                    <span className="shoester-span">Shoester!</span>
-                </h1>
-                <ThemeProvider theme={shopBtnTheme}>
-                    <StyledButton
-                        style={{ fontSize: "64px" }}
-                        variant="contained"
-                        color="primary"
-                        className="shopBtn"
-                        onClick={() => {
-                            navigate("/shop");
-                        }}>
-                        Shop
-                    </StyledButton>
-                </ThemeProvider>
+class LandingPage extends React.Component {
+    constructor(props) {
+        super(props);
+        this.state = {
+            url: window.location.href,
+        };
+    }
+    setCacheCookie = (name, value, options = {}) => {
+        document.cookie =
+            encodeURIComponent(name) +
+            "=" +
+            encodeURIComponent(value) +
+            "; max-age=900";
+    };
+
+    getCacheCookie = async (regex) => {
+        var cookies = document.cookie.split(/;\s*/),
+            i;
+        for (i = 0; i < cookies.length; i++) {
+            if (cookies[i].match(regex)) {
+                return decodeURIComponent(cookies[i]);
+            }
+        }
+        return undefined;
+    };
+
+    componentDidMount() {
+        let shoeCookie = this.getCacheCookie(/^Shoester+=/); // passing a regex
+        if (shoeCookie === undefined) {
+            axios.get("http://localhost:8000/addContext", {}).then((res) => {
+                shoeCookie = res.data["SessionValue"];
+                this.setCacheCookie("Shoester", shoeCookie, {
+                    samesite: "lax", // defends against XSRF
+                    path: "/",
+                });
+            });
+        }
+    }
+    render() {
+        return (
+            <div className="home-root">
+                <NavBar
+                    theme={navBarBtnTheme}
+                    buttons={[<LoginButton />, <SignupButton />]}
+                />
+                <div className="inner-root">
+                    <h1 className="shoester-h1">
+                        Welcome to {<br />}
+                        <span className="shoester-span">Shoester!</span>
+                    </h1>
+                    <ThemeProvider theme={shopBtnTheme}>
+                        <StyledButton
+                            style={{ fontSize: "64px" }}
+                            variant="contained"
+                            color="primary"
+                            className="shopBtn"
+                            onClick={() => {
+                                <Redirect to="/shop" />;
+                            }}>
+                            Shop
+                        </StyledButton>
+                    </ThemeProvider>
+                </div>
             </div>
-        </div>
-    );
+        );
+    }
 }
+
+module.exports += LandingPage;
