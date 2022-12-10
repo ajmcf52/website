@@ -2,7 +2,7 @@ import React from "react";
 import axios from "axios";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 import Stack from "@mui/material/Stack";
-import { Redirect } from "react-router-dom";
+import { Navigate } from "react-router-dom";
 import { StyledButton } from "../buttons/styled/StyledButton";
 import SignupButton from "../buttons/SignupButton";
 import LoginButton from "../buttons/LoginButton";
@@ -40,7 +40,13 @@ export const NavBar = (props) => {
         <div className="main-nav">
             <ThemeProvider theme={theme}>
                 <Stack direction="row" spacing={2} className="btn-stack">
-                    {buttons}
+                    {buttons.map((obj, i) => {
+                        return (
+                            <div className={obj.name} key={i}>
+                                {obj}
+                            </div>
+                        );
+                    })}
                 </Stack>
             </ThemeProvider>
         </div>
@@ -90,7 +96,10 @@ class LandingPage extends React.Component {
             <div className="home-root">
                 <NavBar
                     theme={navBarBtnTheme}
-                    buttons={[<LoginButton />, <SignupButton />]}
+                    buttons={[
+                        <LoginButton name="login" />,
+                        <SignupButton name="signup" />,
+                    ]}
                 />
                 <div className="inner-root">
                     <h1 className="shoester-h1">
@@ -104,7 +113,7 @@ class LandingPage extends React.Component {
                             color="primary"
                             className="shopBtn"
                             onClick={() => {
-                                <Redirect to="/shop" />;
+                                <Navigate to="/shop" replace={true} />;
                             }}>
                             Shop
                         </StyledButton>
@@ -115,4 +124,4 @@ class LandingPage extends React.Component {
     }
 }
 
-module.exports += LandingPage;
+export default LandingPage;
