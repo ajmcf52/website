@@ -6,6 +6,10 @@
     margin-top: 40px;
 }
 
+.pw-confirm-field {
+    margin-right: 0px;
+}
+
 .title {
     margin-bottom: 10px;
 }
@@ -23,4 +27,14 @@
 .submit-button {
     position: relative;
     top: -75px;
+}
+
+.show-pw-form-ctrl {
+    position: relative;
+    left: 62%;
+    top: 80%;
+}
+
+.show-pw-text {
+    font-size: small;
 }

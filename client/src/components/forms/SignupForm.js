@@ -1,12 +1,20 @@
 import React from "react";
 import axios from "axios";
 import { alpha, styled } from "@mui/material/styles";
-import TextField from "@mui/material/TextField";
+import {
+    FormControlLabel,
+    TextField,
+    Checkbox,
+    Typography,
+} from "@mui/material";
 import PasswordChecklist from "react-password-checklist";
 import "./css/SignupForm.css";
-import { FormHelperText } from "@mui/material";
 
 const emailRegex = /^\S+@\S+\.\S+$/;
+const pwRegex = /^[a-zA-Z0-9\-_~!@#$%^&*]{2,32}$/;
+const pwIsValid = (pw, pwConfirm) => {
+    return pwRegex.test(pw) && pw === pwConfirm;
+};
 
 const StyledField = styled(
     (
@@ -45,10 +53,13 @@ export default class SignupForm extends React.Component {
             email: "",
             password: "",
             passwordConfirm: "",
-            passwordValid: true,
+            passwordSuccess: false,
+            passwordError: false,
+            passwordBlurred: false,
             emailError: false,
             emailSuccess: false,
             emailBlurred: false,
+            showPassword: true,
         };
     }
 
@@ -61,6 +72,17 @@ export default class SignupForm extends React.Component {
                 emailSuccess: email.length > 0 && isMatch,
                 emailBlurred: true,
             }));
+        } else if (evt.target.name === "password") {
+            let pw = evt.target.value;
+            let pwValid = pwIsValid(
+                this.state.password,
+                this.state.passwordConfirm
+            );
+            this.setState(() => ({
+                passwordBlurred: true,
+                passwordSuccess: pwValid,
+                passwordError: !pwValid,
+            }));
         }
     };
 
@@ -68,6 +90,10 @@ export default class SignupForm extends React.Component {
         if (evt.target.name === "email") {
             this.setState(() => ({
                 emailBlurred: false,
+            }));
+        } else if (evt.target.name === "password") {
+            this.setState(() => ({
+                passwordBlurred: false,
             }));
         }
     };
@@ -92,10 +118,35 @@ export default class SignupForm extends React.Component {
                     emailSuccess: false,
                 }));
             }
-        }
-
-        // for non-email changes.
-        else {
+        } else if (
+            evt.target.name === "password" ||
+            evt.target.name === "passwordConfirm"
+        ) {
+            const pw =
+                evt.target.name === "password"
+                    ? evt.target.value
+                    : this.state.password;
+            const pwConfirm =
+                evt.target.name === "passwordConfirm"
+                    ? evt.target.value
+                    : this.state.passwordConfirm;
+            const isValid = pwIsValid(pw, pwConfirm);
+            if (isValid) {
+                this.setState(() => ({
+                    passwordSuccess: true,
+                    passwordError: false,
+                    password: pw,
+                    passwordConfirm: pwConfirm,
+                }));
+            } else {
+                this.setState(() => ({
+                    passwordSuccess: false,
+                    passwordError: pw.length > 0 || pwConfirm.length > 0,
+                    password: pw,
+                    passwordConfirm: pwConfirm,
+                }));
+            }
+        } else {
             this.setState(() => ({
                 [evt.target.name]: evt.target.value,
             }));
@@ -192,10 +243,10 @@ export default class SignupForm extends React.Component {
                             label="Password"
                             defaultValue=""
                             onChange={this.handleChange}
-                            error={!this.state.pwValid}
+                            error={this.state.passwordError}
                             variant="outlined"
                             name="password"
-                            type="password"
+                            type={this.state.showPassword ? "text" : "password"}
                         />
                     </div>
                     <div className="input-container pw-confirm-field">
@@ -206,9 +257,38 @@ export default class SignupForm extends React.Component {
                             label="Confirm Password"
                             defaultValue=""
                             onChange={this.handleChange}
+                            error={this.state.passwordError}
                             variant="outlined"
                             name="passwordConfirm"
                             type="password"
+                        />
+                        <FormControlLabel
+                            control={
+                                <Checkbox
+                                    size="small"
+                                    disableRipple
+                                    checked={this.state.showPassword}
+                                    onChange={(evt) => {
+                                        this.setState((prevState) => ({
+                                            showPassword:
+                                                !prevState.showPassword,
+                                        }));
+                                    }}
+                                />
+                            }
+                            label={
+                                <Typography
+                                    style={{
+                                        fontSize: "small",
+                                        color: "grey",
+                                        position: "relative",
+                                        left: "8px",
+                                    }}>
+                                    Show Password
+                                </Typography>
+                            }
+                            className="show-pw-form-ctrl"
+                            labelPlacement="start"
                         />
                     </div>
                     <PasswordChecklist
