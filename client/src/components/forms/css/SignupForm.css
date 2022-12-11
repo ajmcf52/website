@@ -1,9 +1,9 @@
-.name-field {
+.name-field .email-field {
     margin-bottom: 20px;
 }
 
-.input-container:not(.name-field) {
-    margin-top: 30px;
+.pw-field {
+    margin-top: 40px;
 }
 
 .title {

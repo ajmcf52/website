@@ -4,6 +4,7 @@ import { alpha, styled } from "@mui/material/styles";
 import TextField from "@mui/material/TextField";
 import PasswordChecklist from "react-password-checklist";
 import "./css/SignupForm.css";
+import { FormHelperText } from "@mui/material";
 
 const emailRegex = /^\S+@\S+\.\S+$/;
 
@@ -44,32 +45,61 @@ export default class SignupForm extends React.Component {
             email: "",
             password: "",
             passwordConfirm: "",
-            emailInvalid: false,
-            pwInvalid: false,
+            passwordValid: true,
+            emailError: false,
+            emailSuccess: false,
+            emailBlurred: false,
         };
     }
 
     handleBlur = (evt) => {
         if (evt.target.name === "email") {
-            this.setState((prevState) => ({
-                emailInvalid:
-                    emailRegex !== evt.target.value &&
-                    prevState.email.length !== 0,
+            let email = evt.target.value;
+            let isMatch = emailRegex.test(email);
+            this.setState(() => ({
+                emailError: email.length > 0 && !isMatch,
+                emailSuccess: email.length > 0 && isMatch,
+                emailBlurred: true,
             }));
-        } else if (evt.target.name === "password") {
-            this.setState((prevState) => ({
-                pwInvalid:
-                    prevState.password.length !== 0 &&
-                    (evt.target.value.length < 2 ||
-                        evt.target.value.length > 32),
+        }
+    };
+
+    handleFocus = (evt) => {
+        if (evt.target.name === "email") {
+            this.setState(() => ({
+                emailBlurred: false,
             }));
         }
     };
 
     handleChange = (evt) => {
-        this.setState(() => ({
-            [evt.target.name]: evt.target.value,
-        }));
+        if (evt.target.name === "email") {
+            // console.log("email value is --> " + evt.target.value);
+            // console.log(evt.target.value.match(emailRegex));
+
+            let email = evt.target.value;
+            let isMatch = emailRegex.test(email);
+            if (isMatch) {
+                this.setState(() => ({
+                    emailSuccess: true,
+                    emailError: false,
+                    email: evt.target.value,
+                }));
+            } else if (this.state.emailError) {
+                this.setState(() => ({
+                    email: evt.target.value,
+                    emailError: false,
+                    emailSuccess: false,
+                }));
+            }
+        }
+
+        // for non-email changes.
+        else {
+            this.setState(() => ({
+                [evt.target.name]: evt.target.value,
+            }));
+        }
     };
 
     handleSubmit = (evt) => {
@@ -124,7 +154,7 @@ export default class SignupForm extends React.Component {
                             name="lname"
                         />
                     </div>
-                    <div className="input-container">
+                    <div className="input-container email-field">
                         <StyledField
                             id="email-field"
                             className="field"
@@ -133,12 +163,28 @@ export default class SignupForm extends React.Component {
                             defaultValue={""}
                             onChange={this.handleChange}
                             onBlur={this.handleBlur}
-                            error={this.state.emailInvalid}
+                            onFocus={this.handleFocus}
+                            error={this.state.emailError}
+                            color={
+                                this.state.emailError
+                                    ? "error"
+                                    : this.state.emailSuccess
+                                    ? "success"
+                                    : !this.state.emailBlurred
+                                    ? "secondary"
+                                    : "primary"
+                            }
                             variant="outlined"
                             name="email"
+                            helperText={
+                                this.state.emailError &&
+                                this.state.email.length > 0
+                                    ? "The email provided is invalid."
+                                    : ""
+                            }
                         />
                     </div>
-                    <div className="input-container">
+                    <div className="input-container pw-field">
                         <StyledField
                             id="password-field"
                             className="field"
@@ -146,13 +192,13 @@ export default class SignupForm extends React.Component {
                             label="Password"
                             defaultValue=""
                             onChange={this.handleChange}
-                            error={this.state.pwInvalid}
+                            error={!this.state.pwValid}
                             variant="outlined"
                             name="password"
                             type="password"
                         />
                     </div>
-                    <div className="input-container">
+                    <div className="input-container pw-confirm-field">
                         <StyledField
                             id="password-confirm-field"
                             className="field"
