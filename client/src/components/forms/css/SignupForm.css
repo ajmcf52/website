@@ -27,6 +27,7 @@
 .submit-button {
     position: relative;
     top: -75px;
+    left: -35px;
 }
 
 .show-pw-form-ctrl {

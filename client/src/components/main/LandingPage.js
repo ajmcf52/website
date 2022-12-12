@@ -6,6 +6,7 @@ import { Navigate } from "react-router-dom";
 import { StyledButton } from "../buttons/styled/StyledButton";
 import SignupButton from "../buttons/SignupButton";
 import LoginButton from "../buttons/LoginButton";
+import { setCacheCookie, getCacheCookie } from "../../utils/CacheCookie";
 import "./css/LandingPage.css";
 
 const navBarBtnTheme = createTheme({
@@ -60,31 +61,13 @@ class LandingPage extends React.Component {
             url: window.location.href,
         };
     }
-    setCacheCookie = (name, value, options = {}) => {
-        document.cookie =
-            encodeURIComponent(name) +
-            "=" +
-            encodeURIComponent(value) +
-            "; max-age=900";
-    };
 
-    getCacheCookie = async (regex) => {
-        var cookies = document.cookie.split(/;\s*/),
-            i;
-        for (i = 0; i < cookies.length; i++) {
-            if (cookies[i].match(regex)) {
-                return decodeURIComponent(cookies[i]);
-            }
-        }
-        return undefined;
-    };
-
-    componentDidMount() {
-        let shoeCookie = this.getCacheCookie(/^Shoester+=/); // passing a regex
+    async componentDidMount() {
+        let shoeCookie = await getCacheCookie(/^Shoester+=/);
         if (shoeCookie === undefined) {
             axios.get("http://localhost:8000/addContext", {}).then((res) => {
-                shoeCookie = res.data["SessionValue"];
-                this.setCacheCookie("Shoester", shoeCookie, {
+                shoeCookie = res.data["sessionValue"];
+                setCacheCookie("Shoester", shoeCookie, {
                     samesite: "lax", // defends against XSRF
                     path: "/",
                 });

@@ -183,6 +183,7 @@ export default class SignupForm extends React.Component {
 
                     <div className="input-container name-field">
                         <StyledField
+                            required
                             id="fname-field"
                             className="field"
                             fullWidth
@@ -195,6 +196,7 @@ export default class SignupForm extends React.Component {
                     </div>
                     <div className="input-container name-field">
                         <StyledField
+                            required
                             id="lname-field"
                             className="field"
                             fullWidth
@@ -207,6 +209,7 @@ export default class SignupForm extends React.Component {
                     </div>
                     <div className="input-container email-field">
                         <StyledField
+                            required
                             id="email-field"
                             className="field"
                             fullWidth
@@ -237,6 +240,7 @@ export default class SignupForm extends React.Component {
                     </div>
                     <div className="input-container pw-field">
                         <StyledField
+                            required
                             id="password-field"
                             className="field"
                             fullWidth
@@ -251,6 +255,7 @@ export default class SignupForm extends React.Component {
                     </div>
                     <div className="input-container pw-confirm-field">
                         <StyledField
+                            required
                             id="password-confirm-field"
                             className="field"
                             fullWidth
