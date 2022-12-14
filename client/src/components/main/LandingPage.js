@@ -38,7 +38,7 @@ const shopBtnTheme = createTheme({
 export const NavBar = (props) => {
     const { theme, buttons } = props;
     return (
-        <div className="main-nav">
+        <div key={"LandingPage"} className="main-nav">
             <ThemeProvider theme={theme}>
                 <Stack direction="row" spacing={2} className="btn-stack">
                     {buttons.map((obj, i) => {
@@ -67,10 +67,11 @@ class LandingPage extends React.Component {
         if (shoeCookie === undefined) {
             axios.get("http://localhost:8000/addContext", {}).then((res) => {
                 shoeCookie = res.data["sessionValue"];
-                setCacheCookie("Shoester", shoeCookie, {
-                    samesite: "lax", // defends against XSRF
-                    path: "/",
-                });
+                const expiry = res.data["sessionExpiry"];
+
+                console.log("shoecookie --> ", shoeCookie);
+                console.log("expiry --> ", expiry);
+                setCacheCookie("Shoester", shoeCookie);
             });
         }
     }

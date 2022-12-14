@@ -8,6 +8,7 @@ import {
     Typography,
 } from "@mui/material";
 import PasswordChecklist from "react-password-checklist";
+import { getCacheCookie } from "../../utils/CacheCookie";
 import "./css/SignupForm.css";
 
 const emailRegex = /^\S+@\S+\.\S+$/;
@@ -156,9 +157,15 @@ export default class SignupForm extends React.Component {
     handleSubmit = (evt) => {
         evt.preventDefault();
         const { fname, lname, email, password } = this.state;
+        const token = getCacheCookie(/^Shoester+=$/);
         const name = fname + " " + lname;
         axios
-            .post("http://localhost:8000/signup", { name, email, password })
+            .post("http://localhost:8000/signup", {
+                name,
+                email,
+                password,
+                token,
+            })
             .then((res) => {
                 console.log(res);
                 console.log(res.data);
