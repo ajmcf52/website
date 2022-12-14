@@ -63,7 +63,7 @@ class LandingPage extends React.Component {
     }
 
     async componentDidMount() {
-        let shoeCookie = await getCacheCookie(/^Shoester+=/);
+        let shoeCookie = await getCacheCookie(/^Shoester+=$/);
         if (shoeCookie === undefined) {
             axios.get("http://localhost:8000/addContext", {}).then((res) => {
                 shoeCookie = res.data["sessionValue"];

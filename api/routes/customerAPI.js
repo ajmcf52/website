@@ -23,8 +23,9 @@ router.get("/addContext", async (req, res) => {
         [cookieValue, null, null, "guest", expiryValue],
         (err, results, fields) => {
             if (err && err.code === "ER_DUP_ENTRY") {
-                /* BUG HERE :: See https://github.com/ajmcf52/shoedawg/issues/1 for more details.*/
-                // do nothing for now.
+                /* BUG HERE :: See https://github.com/ajmcf52/shoedawg/issues/1 for more details. */
+
+                console.log("Duplicate Entry in CONTEXT (known bug)");
             } else if (err) {
                 console.log(err);
             } else {

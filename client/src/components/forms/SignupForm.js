@@ -8,7 +8,7 @@ import {
     Typography,
 } from "@mui/material";
 import PasswordChecklist from "react-password-checklist";
-import { getCacheCookie } from "../../utils/CacheCookie";
+import { setCacheCookie, getCacheCookie } from "../../utils/CacheCookie";
 import "./css/SignupForm.css";
 
 const emailRegex = /^\S+@\S+\.\S+$/;
@@ -101,9 +101,6 @@ export default class SignupForm extends React.Component {
 
     handleChange = (evt) => {
         if (evt.target.name === "email") {
-            // console.log("email value is --> " + evt.target.value);
-            // console.log(evt.target.value.match(emailRegex));
-
             let email = evt.target.value;
             let isMatch = emailRegex.test(email);
             if (isMatch) {
@@ -154,17 +151,32 @@ export default class SignupForm extends React.Component {
         }
     };
 
-    handleSubmit = (evt) => {
+    handleSubmit = async (evt) => {
         evt.preventDefault();
         const { fname, lname, email, password } = this.state;
-        const token = getCacheCookie(/^Shoester+=$/);
         const name = fname + " " + lname;
+        let tokenValue = "";
+        let shoeCookie = "";
+        var token = await getCacheCookie(/^Shoester+=/);
+        if (token === undefined) {
+            axios.get("http://localhost:8000/addContext", {}).then((res) => {
+                shoeCookie = res.data["sessionValue"];
+                const expiry = res.data["sessionExpiry"];
+
+                console.log("shoecookie --> ", shoeCookie);
+                console.log("expiry --> ", expiry);
+                setCacheCookie("Shoester", shoeCookie);
+            });
+            token = await getCacheCookie(/^Shoester+=/);
+        }
+        tokenValue = token.replace(/^Shoester+=/, "");
+
         axios
             .post("http://localhost:8000/signup", {
                 name,
                 email,
                 password,
-                token,
+                tokenValue,
             })
             .then((res) => {
                 console.log(res);
