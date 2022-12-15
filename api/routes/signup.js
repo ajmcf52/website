@@ -39,13 +39,11 @@ router.post("/signup", async (req, res) => {
     var hash = "";
     const hashPword = async (password, saltRounds = 10) => {
         salt = await bcrypt.genSalt(saltRounds);
-        console.log("salt length --> ", salt.length);
         return await bcrypt.hash(password, salt);
     };
 
     const insertToDb = async () => {
         hash = await hashPword(pword);
-        console.log("hash length --> ", hash.length);
         var sql = `UPDATE CONTEXT SET session_id=? WHERE session_id=?;
             INSERT INTO USER(email, name, pword, salt, token, account_type) VALUES(?, ?, ?, ?, ?, ?);
             INSERT INTO CUSTOMER (email, address, phone_no) VALUES (?, ?, ?)`;
@@ -65,10 +63,21 @@ router.post("/signup", async (req, res) => {
                 null,
             ],
             (err) => {
-                if (err) {
-                    throw err;
+                if (err && err.errno === 1062) {
+                    // code for 'ER_DUP_ENTRY'
+                    res.status(409).send({
+                        errText: "Email already in use.",
+                        errcode: 1062,
+                    });
+                } else if (err) {
+                    res.status(400).send({
+                        errText:
+                            "Something strange has occurred, please try again.",
+                        errcode: 1069,
+                    });
+                } else {
+                    res.status(200).send("User table updated.");
                 }
-                res.send("user table updated!");
             }
         );
     };

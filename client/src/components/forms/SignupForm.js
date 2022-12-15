@@ -61,8 +61,25 @@ export default class SignupForm extends React.Component {
             emailSuccess: false,
             emailBlurred: false,
             showPassword: true,
+            submission: {
+                err: false,
+                errcode: 0,
+                errtext: " ",
+            },
+            err: false,
+            errcode: 0,
+            errtext: " ",
         };
+        // this.displayError = this.displayError.bind(this);
     }
+
+    displayError = (e) => {
+        this.setState(() => ({
+            err: true,
+            errcode: e.response.data.errcode,
+            errtext: e.response.data.errText,
+        }));
+    };
 
     handleBlur = (evt) => {
         if (evt.target.name === "email") {
@@ -171,24 +188,40 @@ export default class SignupForm extends React.Component {
         }
         tokenValue = token.replace(/^Shoester+=/, "");
 
-        axios
+        await axios
             .post("http://localhost:8000/signup", {
                 name,
                 email,
                 password,
                 tokenValue,
             })
+            .catch((error) => {
+                console.log("ERROR --> ", error);
+                //this.displayError(error);
+                this.setState(
+                    {
+                        err: true,
+                        errcode: error.response.data.errcode,
+                        errtext: error.response.data.errText,
+                    },
+                    () => {
+                        console.log("setstate done");
+                    }
+                );
+            })
             .then((res) => {
-                console.log(res);
-                console.log(res.data);
+                if (res !== undefined) {
+                    console.log(res.data);
+                }
             });
     };
 
-    componentDidMount() {
-        console.log("dood!");
-    }
+    // componentDidMount() {
+    //     console.log("dood!");
+    // }
 
     render() {
+        console.log(this.state);
         return (
             <div className="form-container">
                 <form
@@ -315,7 +348,28 @@ export default class SignupForm extends React.Component {
                             labelPlacement="start"
                         />
                     </div>
+                    <div
+                        className="error-msg"
+                        style={{
+                            display: this.state.submission.err
+                                ? "table"
+                                : "none",
+                            minHeight: "30px",
+                            minWidth: "100px",
+                        }}>
+                        <Typography
+                            className="css-ahj2mt-MuiTypography-root"
+                            style={{
+                                fontSize: "small",
+                                color: "red",
+                                position: "relative",
+                                minHeight: "30px",
+                            }}>
+                            {this.state.submission.errtext}
+                        </Typography>
+                    </div>
                     <PasswordChecklist
+                        className="pw-checklist"
                         rules={[
                             "minLength",
                             "specialChar",
