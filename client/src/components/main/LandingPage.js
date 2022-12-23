@@ -1,11 +1,13 @@
 import React from "react";
 import axios from "axios";
+import { connect } from "react-redux";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 import Stack from "@mui/material/Stack";
 import { Navigate } from "react-router-dom";
 import { StyledButton } from "../buttons/styled/StyledButton";
-import SignupButton from "../buttons/SignupButton";
 import LoginButton from "../buttons/LoginButton";
+import LogoutButton from "../buttons/LogoutButton";
+import SignupButton from "../buttons/SignupButton";
 import { setCacheCookie, getCacheCookie } from "../../utils/CacheCookie";
 import "./css/LandingPage.css";
 
@@ -80,15 +82,30 @@ class LandingPage extends React.Component {
             <div className="home-root">
                 <NavBar
                     theme={navBarBtnTheme}
-                    buttons={[
-                        <LoginButton name="login" />,
-                        <SignupButton name="signup" />,
-                    ]}
+                    buttons={
+                        this.props.isLoggedIn
+                            ? [<LogoutButton name="logout" />]
+                            : [
+                                  <LoginButton name="login" />,
+                                  <SignupButton name="signup" />,
+                              ]
+                    }
                 />
                 <div className="inner-root">
                     <h1 className="shoester-h1">
                         Welcome to {<br />}
-                        <span className="shoester-span">Shoester!</span>
+                        {this.props.isLoggedIn ? (
+                            <div>
+                                <span className="shoester-span">
+                                    Shoester,{" "}
+                                </span>
+                                <span className="shoester-span">
+                                    {this.props.firstName}!
+                                </span>
+                            </div>
+                        ) : (
+                            <span className="shoester-span">Shoester!</span>
+                        )}
                     </h1>
                     <ThemeProvider theme={shopBtnTheme}>
                         <StyledButton
@@ -108,4 +125,9 @@ class LandingPage extends React.Component {
     }
 }
 
-export default LandingPage;
+const mapStateToProps = (state, props) => ({
+    isLoggedIn: state && state.login && state.login.loggedIn,
+    firstName: state && state.login && state.login.fname,
+});
+
+export default connect(mapStateToProps, null)(LandingPage);

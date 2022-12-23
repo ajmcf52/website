@@ -1,5 +1,6 @@
 import React from "react";
 import axios from "axios";
+import { connect } from "react-redux";
 import { alpha, styled } from "@mui/material/styles";
 import {
     FormControlLabel,
@@ -11,6 +12,8 @@ import {
 import PasswordChecklist from "react-password-checklist";
 import { setCacheCookie, getCacheCookie } from "../../utils/CacheCookie";
 import BackButton from "../buttons/BackButton";
+import { LoginEventCreator } from "../../actions/LoginEvent";
+import { withRouter } from "../../utils/withRouter";
 import "./css/SignupForm.css";
 
 const emailRegex = /^\S+@\S+\.\S+$/;
@@ -56,7 +59,7 @@ const StyledField = styled(
     },
 }));
 
-export default class SignupForm extends React.Component {
+class SignupForm extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
@@ -72,16 +75,11 @@ export default class SignupForm extends React.Component {
             emailSuccess: false,
             emailBlurred: false,
             showPassword: true,
-            // submission: {
-            //     err: false,
-            //     errcode: 0,
-            //     errtext: " ",
-            // },
             err: false,
             errcode: 0,
             errtext: " ",
         };
-        // this.displayError = this.displayError.bind(this);
+        this.navigateToLanding = this.navigateToLanding.bind(this);
     }
 
     displayError = (e) => {
@@ -102,7 +100,6 @@ export default class SignupForm extends React.Component {
                 emailBlurred: true,
             }));
         } else if (evt.target.name === "password") {
-            let pw = evt.target.value;
             let pwValid = pwIsValid(
                 this.state.password,
                 this.state.passwordConfirm
@@ -210,23 +207,25 @@ export default class SignupForm extends React.Component {
                 if (res !== undefined) {
                     console.log(res.data);
                     console.log("Signup Successful!!");
+
+                    // --- REDUX EVENT ---
+                    this.props.triggerLogin({ email: email, fname: fname });
+                    this.navigateToLanding();
                 }
             })
             .catch((error) => {
                 console.log("Signup Error! --> ", error);
-                //this.displayError(error);
-                this.setState(
-                    {
-                        err: true,
-                        errcode: error.response.data.errcode,
-                        errtext: error.response.data.errText,
-                    },
-                    () => {
-                        console.log("setstate done");
-                    }
-                );
+                this.setState({
+                    err: true,
+                    errcode: error.response.data.errcode,
+                    errtext: error.response.data.errText,
+                });
             });
     };
+
+    navigateToLanding() {
+        this.props.navigate("/");
+    }
 
     render() {
         return (
@@ -406,3 +405,9 @@ export default class SignupForm extends React.Component {
         );
     }
 }
+
+const mapDispatchToProps = {
+    triggerLogin: LoginEventCreator.login,
+};
+
+export default connect(null, mapDispatchToProps)(withRouter(SignupForm));
