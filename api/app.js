@@ -13,6 +13,8 @@ axios.defaults.headers.post["Content-Type"] = "multipart/form-data";
 
 var indexRouter = require("./routes/index");
 var customerAPI = require("./routes/customerAPI");
+var signup = require("./routes/signup");
+var login = require("./routes/login");
 
 var app = express();
 
@@ -28,30 +30,24 @@ app.use(cookieParser());
 app.use(express.static(path.join(__dirname, "public")));
 
 app.use(indexRouter);
-// app.use("/users", usersRouter);
-// app.use("/testAPI", testAPIRouter);
 app.use(customerAPI);
-
-// app.post("/signup", (req, res) => {
-//   res.data = {
-//     fart: "smelly",
-//   };
-// });
+app.use(signup);
+app.use(login);
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {
-  next(createError(404));
+    next(createError(404));
 });
 
 // error handler
 app.use(function (err, req, res, next) {
-  // set locals, only providing error in development
-  res.locals.message = err.message;
-  res.locals.error = req.app.get("env") === "development" ? err : {};
+    // set locals, only providing error in development
+    res.locals.message = err.message;
+    res.locals.error = req.app.get("env") === "development" ? err : {};
 
-  // render the error page
-  res.status(err.status || 500);
-  res.render("error");
+    // render the error page
+    res.status(err.status || 500);
+    res.render("error");
 });
 
 // const connection = mysql.createConnection(dbConfig);

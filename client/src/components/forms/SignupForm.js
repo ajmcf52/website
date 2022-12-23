@@ -6,6 +6,7 @@ import {
     TextField,
     Checkbox,
     Typography,
+    createStyles,
 } from "@mui/material";
 import PasswordChecklist from "react-password-checklist";
 import { setCacheCookie, getCacheCookie } from "../../utils/CacheCookie";
@@ -16,6 +17,15 @@ const pwRegex = /^[a-zA-Z0-9\-_~!@#$%^&*]{2,32}$/;
 const pwIsValid = (pw, pwConfirm) => {
     return pwRegex.test(pw) && pw === pwConfirm;
 };
+
+const pwErrorMsgStyle = (shouldDisplayError) =>
+    createStyles({
+        root: {
+            display: shouldDisplayError ? "table" : "none",
+            minHeight: "30px",
+            minWidth: "100px",
+        },
+    });
 
 const StyledField = styled(
     (
@@ -61,11 +71,11 @@ export default class SignupForm extends React.Component {
             emailSuccess: false,
             emailBlurred: false,
             showPassword: true,
-            submission: {
-                err: false,
-                errcode: 0,
-                errtext: " ",
-            },
+            // submission: {
+            //     err: false,
+            //     errcode: 0,
+            //     errtext: " ",
+            // },
             err: false,
             errcode: 0,
             errtext: " ",
@@ -195,8 +205,14 @@ export default class SignupForm extends React.Component {
                 password,
                 tokenValue,
             })
+            .then((res) => {
+                if (res !== undefined) {
+                    console.log(res.data);
+                    console.log("Signup Successful!!");
+                }
+            })
             .catch((error) => {
-                console.log("ERROR --> ", error);
+                console.log("Signup Error! --> ", error);
                 //this.displayError(error);
                 this.setState(
                     {
@@ -208,11 +224,6 @@ export default class SignupForm extends React.Component {
                         console.log("setstate done");
                     }
                 );
-            })
-            .then((res) => {
-                if (res !== undefined) {
-                    console.log(res.data);
-                }
             });
     };
 
@@ -350,13 +361,7 @@ export default class SignupForm extends React.Component {
                     </div>
                     <div
                         className="error-msg"
-                        style={{
-                            display: this.state.submission.err
-                                ? "table"
-                                : "none",
-                            minHeight: "30px",
-                            minWidth: "100px",
-                        }}>
+                        style={pwErrorMsgStyle(this.state.err).root}>
                         <Typography
                             className="css-ahj2mt-MuiTypography-root"
                             style={{
@@ -365,7 +370,7 @@ export default class SignupForm extends React.Component {
                                 position: "relative",
                                 minHeight: "30px",
                             }}>
-                            {this.state.submission.errtext}
+                            {this.state.errtext}
                         </Typography>
                     </div>
                     <PasswordChecklist
