@@ -1,7 +1,9 @@
 import React from "react";
 import axios from "axios";
 import BackButton from "../buttons/BackButton";
+import { StyledField } from "../misc/StyledField";
 import "./css/LoginForm.css";
+
 export default class LoginForm extends React.Component {
     constructor(props) {
         super(props);
@@ -12,8 +14,7 @@ export default class LoginForm extends React.Component {
     }
 
     handleChange = (evt) => {
-        console.log("value: " + evt.target.value);
-        this.setState((prevState) => ({
+        this.setState(() => ({
             [evt.target.name]: evt.target.value,
         }));
     };
@@ -42,35 +43,36 @@ export default class LoginForm extends React.Component {
                         onSubmit={this.handleSubmit}>
                         <h1 className="title">Login</h1>
                         <div className="input-container">
-                            <label className="input-label" htmlFor="email">
-                                Email
-                            </label>
-                            <input
-                                type="text"
-                                id="email"
+                            <StyledField
+                                required
+                                id="email-field"
                                 className="field"
-                                defaultValue={""}
+                                fullWidth
+                                label="Email"
+                                defaultValue=""
+                                onChange={this.handleChange}
+                                variant="outlined"
                                 name="email"
-                                placeholder="a"
-                                onChange={this.handleChange}></input>
+                            />
                         </div>
                         <div className="input-container">
-                            <label className="input-label" htmlFor="password">
-                                Password
-                            </label>
-                            <input
-                                type="password"
-                                id="password"
+                            <StyledField
+                                required
+                                id="password-field"
                                 className="field"
-                                defaultValue={""}
+                                fullWidth
+                                label="Password"
+                                defaultValue=""
+                                onChange={this.handleChange}
+                                variant="outlined"
                                 name="password"
-                                placeholder="a"
-                                onChange={this.handleChange}></input>
+                                type="password"
+                            />
                         </div>
                         <input
                             type="submit"
                             className="submit-button"
-                            value="sign-up"></input>
+                            value="Submit"></input>
                     </form>
                 </div>
             </div>

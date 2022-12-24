@@ -45,13 +45,6 @@ body {
     margin-bottom: 50px;
 }
 
-.input-container {
-    position: relative;
-    height: 45px;
-    width: 90%;
-    margin-bottom: 17px;
-}
-
 .field {
     position: absolute;
     top: 0px;
@@ -81,19 +74,6 @@ body {
     font-size: 16px;
     transition: 0.5s;
     z-index: 0;
-}
-
-.submit-button {
-    display: block;
-    margin-left: auto;
-    padding: 15px 30px;
-    border: none;
-    background-color: purple;
-    color: white;
-    border-radius: 6px;
-    cursor: pointer;
-    font-size: 16px;
-    margin-top: 30px;
 }
 
 .submit-button:hover {
