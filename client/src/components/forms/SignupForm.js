@@ -229,9 +229,9 @@ class SignupForm extends React.Component {
 
     render() {
         return (
-            <div className="top-level-signup">
+            <div className="top-level">
                 <BackButton className="back-btn" />
-                <div className="form-container">
+                <div className="form-container signup-color">
                     <form
                         name="sign-up"
                         method="post"

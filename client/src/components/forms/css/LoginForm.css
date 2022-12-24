@@ -1,0 +1,15 @@
+.login-color {
+    background-color: #825855;
+}
+
+.back-btn {
+    position: relative;
+    top: 2%;
+    left: 2%;
+    z-index: 1;
+}
+
+.top-level {
+    width: 100%;
+    height: 100%;
+}
