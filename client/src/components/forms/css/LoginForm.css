@@ -44,3 +44,9 @@
     width: 90%;
     margin-bottom: 20px;
 }
+
+.show-pw-form-ctrl {
+    position: relative;
+    left: 62%;
+    top: 80%;
+}

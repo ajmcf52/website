@@ -2,6 +2,7 @@ import React from "react";
 import axios from "axios";
 import BackButton from "../buttons/BackButton";
 import { StyledField } from "../misc/StyledField";
+import { FormControlLabel, Checkbox, Typography } from "@mui/material";
 import "./css/LoginForm.css";
 
 export default class LoginForm extends React.Component {
@@ -10,6 +11,7 @@ export default class LoginForm extends React.Component {
         this.state = {
             email: "",
             password: "",
+            showPassword: false,
         };
     }
 
@@ -37,7 +39,7 @@ export default class LoginForm extends React.Component {
                     <form
                         name="login"
                         method="post"
-                        className="form-login"
+                        className="form-login shadow-layering"
                         action=""
                         encType="multipart/form-data"
                         onSubmit={this.handleSubmit}>
@@ -66,7 +68,39 @@ export default class LoginForm extends React.Component {
                                 onChange={this.handleChange}
                                 variant="outlined"
                                 name="password"
-                                type="password"
+                                type={
+                                    this.state.showPassword
+                                        ? "text"
+                                        : "password"
+                                }
+                            />
+                            <FormControlLabel
+                                control={
+                                    <Checkbox
+                                        size="small"
+                                        disableRipple
+                                        checked={this.state.showPassword}
+                                        onChange={() => {
+                                            this.setState((prevState) => ({
+                                                showPassword:
+                                                    !prevState.showPassword,
+                                            }));
+                                        }}
+                                    />
+                                }
+                                label={
+                                    <Typography
+                                        style={{
+                                            fontSize: "small",
+                                            color: "grey",
+                                            position: "relative",
+                                            left: "8px",
+                                        }}>
+                                        Show Password
+                                    </Typography>
+                                }
+                                className="show-pw-form-ctrl"
+                                labelPlacement="start"
                             />
                         </div>
                         <input
