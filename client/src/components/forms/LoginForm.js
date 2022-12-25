@@ -1,18 +1,38 @@
 import React from "react";
 import axios from "axios";
+import { connect } from "react-redux";
+import {
+    FormControlLabel,
+    Checkbox,
+    Typography,
+    createStyles,
+} from "@mui/material";
 import BackButton from "../buttons/BackButton";
 import { StyledField } from "../misc/StyledField";
-import { FormControlLabel, Checkbox, Typography } from "@mui/material";
+import { LoginEventCreator } from "../../actions/LoginEvent";
+import { withRouter } from "../../utils/withRouter";
 import "./css/LoginForm.css";
 
-export default class LoginForm extends React.Component {
+const errorMsgStyle = (shouldDisplayError) =>
+    createStyles({
+        root: {
+            display: shouldDisplayError ? "table" : "none",
+            minHeight: "30px",
+            minWidth: "100px",
+        },
+    });
+
+class LoginForm extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
             email: "",
             password: "",
             showPassword: false,
+            err: false,
+            errtext: "",
         };
+        this.navigateToLanding = this.navigateToLanding.bind(this);
     }
 
     handleChange = (evt) => {
@@ -27,9 +47,25 @@ export default class LoginForm extends React.Component {
         axios
             .post("http://localhost:8000/login", { email, password })
             .then((res) => {
-                console.log(res.data);
+                this.setState({ err: false, errtext: "" });
+                this.props.triggerLogin({
+                    email: email,
+                    fname: res.data.fname,
+                });
+                this.navigateToLanding();
+            })
+            .catch((error) => {
+                console.log("Login Error! --> ", error);
+                this.setState({
+                    err: true,
+                    errtext: error.response.data.errText,
+                });
             });
     };
+
+    navigateToLanding() {
+        this.props.navigate("/");
+    }
 
     render() {
         return (
@@ -103,6 +139,20 @@ export default class LoginForm extends React.Component {
                                 labelPlacement="start"
                             />
                         </div>
+                        <div
+                            className="error-msg"
+                            style={errorMsgStyle(this.state.err).root}>
+                            <Typography
+                                className="css-ahj2mt-MuiTypography-root"
+                                style={{
+                                    fontSize: "small",
+                                    color: "red",
+                                    position: "relative",
+                                    minHeight: "30px",
+                                }}>
+                                {this.state.errtext}
+                            </Typography>
+                        </div>
                         <input
                             type="submit"
                             className="submit-button"
@@ -113,3 +163,9 @@ export default class LoginForm extends React.Component {
         );
     }
 }
+
+const mapDispatchToProps = {
+    triggerLogin: LoginEventCreator.login,
+};
+
+export default connect(null, mapDispatchToProps)(withRouter(LoginForm));

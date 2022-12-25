@@ -13,7 +13,7 @@ function LogoutButton(props) {
             className="btn btn-logout"
             variant="contained"
             onClick={() => {
-                this.props.triggerLogout();
+                props.triggerLogout();
                 navigate("/");
             }}>
             Logout

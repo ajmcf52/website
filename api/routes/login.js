@@ -4,62 +4,39 @@ var connection = require("../config/connection");
 
 var router = express.Router();
 
-/*
-TODO
-
-investigate what gets returned when login credentials 
-are supplied for an account that doesn't exist.
-
-(Would an error be raised? 
-Or would it just return an empty set?)
-*/
-
-/**
-this route should fire when a user submits their credentials
-at LoginForm.js
-*/
 router.post("/login", async (req, res) => {
     const { email, password } = req.body;
-    // query the DB for user info that correlates with the provided email.
-    var sql = `SELECT * FROM USER AS u WHERE u.email=?`;
-    connection.query(sql, [email], (err, results, fields) => {
-        if (err) {
-            console.log("Error! --> ", err);
-            // res.status(409).send({
-            //     errText: "The provided email does not link to an account.",
-            // });
-        } else {
-            console.log("Provided login email exists.");
-        }
-    });
-    // getting here means the provided email exists in the DB.
-    // now... our next step is verifying a password match.
     var salt = "";
+
+    const retrieveSalt = async (email) => {
+        var sql = `SELECT salt FROM USER AS u WHERE u.email=?`;
+        const [results] = await (await connection).execute(sql, [email]);
+
+        return results;
+    };
+    var data = await retrieveSalt(email);
+    salt = await data[0]["salt"];
+
     const hashPw = async (pw) => {
-        return await bcrypt.hash(pw, salt);
+        return bcrypt.hash(pw, salt);
     };
     const verifyPw = async () => {
         var hash = await hashPw(password);
-        sql = `SELECT * FROM USER AS u WHERE u.email=? AND u.pword=?`;
-        connection.query(sql, [email, hash], (err, results, fields) => {
-            if (err) {
-                console.log("Error! --> ", err);
-                return false;
-            } else {
-                console.log("Good login!");
-                return true;
-            }
-        });
+        sql = `SELECT name FROM USER AS u WHERE u.email=? AND u.pword=?`;
+        var [results] = await (await connection).execute(sql, [email, hash]);
+        console.log(results);
+        return results;
     };
-    const isGoodLogin = await verifyPw();
-    // TODO do something based on whether or not we had a good login.
-    if (isGoodLogin) {
+    const name = (await verifyPw())[0]["name"];
+    if (name !== undefined) {
+        const fname = name.split(" ")[0];
         res.status(200).send({
             loginResponse: "Good Login.",
+            fname: fname,
         });
     } else {
         res.status(422).send({
-            loginResponse: "Invalid login credentials.",
+            errText: "Invalid login credentials.",
         });
     }
 });
