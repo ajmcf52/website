@@ -5,7 +5,6 @@ var connection = require("../config/connection");
 var router = express.Router();
 
 const toUserToken = (guestToken, userInitials) => {
-    console.log(guestToken);
     return guestToken.replace("g!", userInitials);
 };
 
@@ -47,39 +46,33 @@ router.post("/signup", async (req, res) => {
         var sql = `UPDATE CONTEXT SET session_id=? WHERE session_id=?;
             INSERT INTO USER(email, name, pword, salt, token, account_type) VALUES(?, ?, ?, ?, ?, ?);
             INSERT INTO CUSTOMER (email, address, phone_no) VALUES (?, ?, ?)`;
-        connection.query(
-            sql,
-            [
-                userToken,
-                guestToken,
-                email,
-                name,
-                hash,
-                salt,
-                userToken,
-                accountType,
-                email,
-                null,
-                null,
-            ],
-            (err) => {
-                if (err && err.errno === 1062) {
-                    // code for 'ER_DUP_ENTRY'
-                    res.status(409).send({
-                        errText: "Email already in use.",
-                        errcode: 1062,
-                    });
-                } else if (err) {
-                    res.status(400).send({
-                        errText:
-                            "Something strange has occurred, please try again.",
-                        errcode: 1069,
-                    });
-                } else {
-                    res.status(200).send("User table updated.");
-                }
-            }
-        );
+        var [error, results, fields] = (await connection).execute(sql, [
+            userToken,
+            guestToken,
+            email,
+            name,
+            hash,
+            salt,
+            userToken,
+            accountType,
+            email,
+            null,
+            null,
+        ]);
+        if (error && error.errno === 1062) {
+            // code for 'ER_DUP_ENTRY'
+            res.status(409).send({
+                errText: "Email already in use.",
+                errcode: 1062,
+            });
+        } else if (error) {
+            res.status(400).send({
+                errText: "Something strange has occurred, please try again.",
+                errcode: 1069,
+            });
+        } else {
+            res.status(200).send("User table updated.");
+        }
     };
     await insertToDb();
 });

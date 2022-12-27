@@ -18,21 +18,18 @@ router.get("/addContext", async (req, res) => {
     };
     expiry.addHours(1);
     var expiryValue = dformat(expiry, "yyyy-MM-dd HH:mm:ss");
-    connection.query(
-        sql,
-        [cookieValue, null, null, "guest", expiryValue],
-        (err, results, fields) => {
-            if (err && err.code === "ER_DUP_ENTRY") {
-                /* BUG HERE :: See https://github.com/ajmcf52/shoedawg/issues/1 for more details. */
+    var [error, results, fields] = await (
+        await connection
+    ).query(sql, [cookieValue, null, null, "guest", expiryValue]);
 
-                console.log("Duplicate Entry in CONTEXT (known bug)");
-            } else if (err) {
-                console.log(err);
-            } else {
-                console.log("Context add successful!");
-            }
-        }
-    );
+    if (error && error.code === "ER_DUP_ENTRY") {
+        /* BUG HERE :: See https://github.com/ajmcf52/shoedawg/issues/1 for more details. */
+        console.log("Duplicate Entry in CONTEXT (known bug)");
+    } else if (err) {
+        console.log("Unknown error in /addContext -->", err);
+    } else {
+        console.log("Context add successful!");
+    }
     res.send({
         sessionValue: cookieValue,
         sessionExpiry: expiryValue,
