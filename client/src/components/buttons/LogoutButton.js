@@ -4,16 +4,16 @@ import { connect } from "react-redux";
 import { LoginEventCreator } from "../../actions/LoginEvent";
 
 function LogoutButton(props) {
+    const { triggerlogout } = props;
     let navigate = useNavigate();
     return (
         <StyledButton
-            {...props}
             key="logout"
             color="primary"
             className="btn btn-logout"
             variant="contained"
             onClick={() => {
-                props.triggerLogout();
+                triggerlogout();
                 navigate("/");
             }}>
             Logout
@@ -22,7 +22,7 @@ function LogoutButton(props) {
 }
 
 const mapDispatchToProps = {
-    triggerLogout: LoginEventCreator.logout,
+    triggerlogout: LoginEventCreator.logout,
 };
 
 export default connect(null, mapDispatchToProps)(LogoutButton);

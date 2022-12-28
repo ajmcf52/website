@@ -46,7 +46,9 @@ router.post("/signup", async (req, res) => {
         var sql = `UPDATE CONTEXT SET session_id=? WHERE session_id=?;
             INSERT INTO USER(email, name, pword, salt, token, account_type) VALUES(?, ?, ?, ?, ?, ?);
             INSERT INTO CUSTOMER (email, address, phone_no) VALUES (?, ?, ?)`;
-        var [error, results, fields] = (await connection).execute(sql, [
+        var [results, fields, error] = await (
+            await connection
+        ).query(sql, [
             userToken,
             guestToken,
             email,
