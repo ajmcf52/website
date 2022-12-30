@@ -1,5 +1,7 @@
 var express = require("express");
 var bcrypt = require("bcrypt");
+var jwt = require("jsonwebtoken");
+var authConfig = require("../config/authConfig");
 var connection = require("../config/connection");
 
 var router = express.Router();
@@ -11,7 +13,6 @@ router.post("/login", async (req, res) => {
     const retrieveSalt = async (email) => {
         var sql = `SELECT salt FROM USER AS u WHERE u.email=?`;
         const [results] = await (await connection).execute(sql, [email]);
-
         return results;
     };
     var data = await retrieveSalt(email);
@@ -24,12 +25,18 @@ router.post("/login", async (req, res) => {
         var hash = await hashPw(password);
         sql = `SELECT name FROM USER AS u WHERE u.email=? AND u.pword=?`;
         var [results] = await (await connection).execute(sql, [email, hash]);
-        console.log(results);
         return results;
     };
     const name = (await verifyPw())[0]["name"];
     if (name !== undefined) {
         const fname = name.split(" ")[0];
+        const accessToken = jwt.sign(
+            { email: email, fname: fname },
+            authConfig.secret,
+            {
+                expiresIn: authConfig.jwtExpiration,
+            }
+        );
         res.status(200).send({
             loginResponse: "Good Login.",
             fname: fname,
