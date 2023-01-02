@@ -3,6 +3,7 @@ var bcrypt = require("bcrypt");
 var jwt = require("jsonwebtoken");
 var authConfig = require("../config/authConfig");
 var connection = require("../config/connection");
+var { v4: uuidv4 } = require("uuid");
 
 var router = express.Router();
 
@@ -30,16 +31,25 @@ router.post("/login", async (req, res) => {
     const name = (await verifyPw())[0]["name"];
     if (name !== undefined) {
         const fname = name.split(" ")[0];
-        const accessToken = jwt.sign(
-            { email: email, fname: fname },
-            authConfig.secret,
-            {
-                expiresIn: authConfig.jwtExpiration,
-            }
-        );
+        const payload = { email: email, fname: fname };
+
+        const accessToken = jwt.sign(payload, authConfig.secret, {
+            expiresIn: authConfig.jwtExpiration,
+        });
+        const refreshToken = jwt.sign(payload, uuidv4(), {
+            expiresIn: authConfig.jwtExpiration,
+        });
+
+        res.cookie("accessToken", accessToken, {
+            maxAge: authConfig.jwtExpiration * 1000,
+        });
+        res.cookie("refreshToken", refreshToken, {
+            maxAge: authConfig.jwtRefreshExpiration * 1000,
+        });
         res.status(200).send({
-            loginResponse: "Good Login.",
             fname: fname,
+            accessToken: accessToken,
+            refreshToken: refreshToken,
         });
     } else {
         res.status(422).send({
