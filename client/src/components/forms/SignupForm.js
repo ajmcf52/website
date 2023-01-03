@@ -1,6 +1,7 @@
 import axios from "../../api/axios";
 import React from "react";
 import { useNavigate } from "react-router-dom";
+import { useDispatch } from "react-redux";
 import { useRef, useState, useEffect } from "react";
 import { StyledField } from "../misc/StyledField";
 import {
@@ -10,6 +11,7 @@ import {
     createStyles,
 } from "@mui/material";
 import PasswordChecklist from "react-password-checklist";
+import { LoginEventCreator } from "../../actions/LoginEvent";
 import BackButton from "../buttons/BackButton";
 import "./css/SignupForm.css";
 
@@ -27,6 +29,8 @@ const pwErrorMsgStyle = (shouldDisplayError) =>
     });
 
 const SignupForm = () => {
+    const dispatch = useDispatch();
+
     const navigate = useNavigate();
 
     const fnameRef = useRef();
@@ -81,35 +85,40 @@ const SignupForm = () => {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        if (!EMAIL_REGEX.test(email) || !PW_REGEX.text(pword)) {
+        if (!EMAIL_REGEX.test(email) || !PW_REGEX.test(pword)) {
             setErrorText("Invalid Entry");
             return;
         }
         const name = fname + " " + lname;
-        await axios
-            .post("/signup", {
-                name,
-                email,
-                pword,
-            })
-            .then((res) => {
-                if (res !== undefined) {
-                    console.log(res.data);
-                    console.log("Signup Successful!!");
+        try {
+            await axios
+                .post(
+                    "/signup",
+                    {
+                        name,
+                        email,
+                        pword,
+                    },
+                    {
+                        headers: { "Content-Type": "application/json" },
+                        withCredentials: true,
+                    }
+                )
+                .then((res) => {
+                    if (res !== undefined) {
+                        console.log(res.data);
+                        console.log("Signup Successful!!");
+                        setSuccess(true);
 
-                    // --- REDUX EVENT ---
-                    this.props.triggerLogin({ email: email, fname: fname });
-                    navigate("/");
-                }
-            })
-            .catch((error) => {
-                console.log("Signup Error! --> ", error);
-                this.setState({
-                    err: true,
-                    errcode: error.response.data.errcode,
-                    errtext: error.response.data.errText,
+                        // --- REDUX EVENT ---
+                        dispatch(LoginEventCreator.login({ email, fname }));
+                        navigate("/");
+                    }
                 });
-            });
+        } catch (error) {
+            console.log("Signup Error! --> ", error);
+            setErrorText(error.response.data.errText);
+        }
     };
 
     return (
