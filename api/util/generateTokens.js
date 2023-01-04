@@ -5,11 +5,16 @@ const { v4: uuidv4 } = require("uuid");
 const generateTokens = async (userInfo) => {
     const payload = { email: userInfo.email, fname: userInfo.fname };
     const accessToken = jwt.sign(payload, jwtConfig.secret, {
-        expiresIn: "15m",
+        expiresIn: jwtConfig.jwtExpiration,
     });
-    const refreshToken = jwt.sign(payload, uuidv4(), { expiresIn: "60d" });
-
-    return Promise.resolve({ accessToken, refreshToken });
+    const refreshToken = jwt.sign(payload, uuidv4(), {
+        expiresIn: jwtConfig.jwtRefreshExpiration,
+    });
+    try {
+        return Promise.resolve({ accessToken, refreshToken });
+    } catch (error) {
+        return Promise.reject(error);
+    }
 };
 
-export default generateTokens;
+module.exports = generateTokens;

@@ -19,12 +19,33 @@ const EMAIL_REGEX = /^\S+@\S+\.\S+$/;
 const PW_REGEX =
     /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[-_~!@#$%^&*]).{2,32}$/;
 
+const submitButtonStyle = (isDisabled) =>
+    createStyles({
+        root: {
+            display: "block",
+            marginLeft: "auto",
+            padding: "15px 30px",
+            border: "none",
+            backgroundColor: isDisabled ? "grey" : "purple",
+            color: "white",
+            borderRadius: "6px",
+            cursor: "pointer",
+            fontSize: "16px",
+            marginTop: "30px",
+            position: "relative",
+            top: "-55px",
+            left: "-35px",
+        },
+    });
+
 const pwErrorMsgStyle = (shouldDisplayError) =>
     createStyles({
         root: {
             display: shouldDisplayError ? "table" : "none",
             minHeight: "30px",
             minWidth: "100px",
+            position: "relative",
+            top: "-5px",
         },
     });
 
@@ -61,16 +82,13 @@ const SignupForm = () => {
 
     const [showPword, setShowPword] = useState(false);
 
+    const [canSubmit, setCanSubmit] = useState(false);
+
     useEffect(() => {
         fnameRef.current.focus();
     }, []);
 
     useEffect(() => {
-        // const result = EMAIL_REGEX.test(email);
-        // console.log(result);
-        // console.log(email);
-        // setValidEmail(result);
-
         setValidEmail(EMAIL_REGEX.test(email));
     }, [email]);
 
@@ -82,6 +100,10 @@ const SignupForm = () => {
     useEffect(() => {
         setErrorText(" ");
     }, [email, pword, pwordConfirm]);
+
+    useEffect(() => {
+        setCanSubmit(validEmail && validPword && validPwordConfirm);
+    }, [validEmail, validPword, validPwordConfirm]);
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -297,7 +319,9 @@ const SignupForm = () => {
                         }}
                     />
                     <input
+                        style={submitButtonStyle(!canSubmit).root}
                         type="submit"
+                        disabled={!canSubmit}
                         className="submit-button"
                         value={"Submit"}></input>
                 </form>

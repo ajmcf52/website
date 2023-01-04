@@ -2,6 +2,7 @@ var express = require("express");
 var bcrypt = require("bcrypt");
 var connection = require("../config/connection");
 var generateTokens = require("../util/generateTokens");
+var authConfig = require("../config/authConfig");
 
 var router = express.Router();
 
@@ -44,9 +45,12 @@ router.post("/signup", async (req, res) => {
                 null,
             ])
             .then(() => {
+                res.cookie("refreshToken", refreshToken, {
+                    maxAge: authConfig.jwtRefreshExpiration * 1000,
+                    httpOnly: true,
+                });
                 res.status(200).send({
                     message: "User table updated.",
-                    refreshToken,
                     accessToken,
                 });
             })
@@ -56,6 +60,7 @@ router.post("/signup", async (req, res) => {
                         errText: "Email already in use.",
                     });
                 } else {
+                    console.error(err);
                     res.status(400).send({
                         errText:
                             "Something strange has occurred, please try again.",
