@@ -3,21 +3,36 @@ var bcrypt = require("bcrypt");
 var connection = require("../config/connection");
 var generateTokens = require("../util/generateTokens");
 var authConfig = require("../config/authConfig");
+var dformat = require("date-fns/format");
+var dateAdd = require("date-fns/add");
 
 var router = express.Router();
+
+const TIMESTAMP_FORMAT = "yyyy-MM-dd HH:mm:ss";
 
 /**
 this route fires when a user presses "submit" in SignupForm.js.
 */
 router.post("/signup", async (req, res) => {
     console.log("req body --> ", req.body);
+
     const name = req.body.name;
     const email = req.body.email;
     const pword = req.body.pword;
-
     const accountType = "user";
     const fname = name.split(" ")[0];
-    const { refreshToken, accessToken } = generateTokens({ email, fname });
+
+    // TODO generate token expiration timestamp
+    var expiration = dformat(
+        dateAdd(new Date(), { seconds: authConfig.jwtRefreshExpiration }),
+        TIMESTAMP_FORMAT
+    );
+
+    const { refreshToken, accessToken } = await generateTokens({
+        email,
+        fname,
+    });
+    // console.log("RT ---> ", refreshToken);
 
     var salt = "";
     var hash = "";
@@ -28,8 +43,9 @@ router.post("/signup", async (req, res) => {
 
     const insertToDb = async () => {
         hash = await hashPword(pword);
-        var sql = `INSERT INTO USER(email, name, pword, salt, refresh_token, account_type) VALUES(?, ?, ?, ?, ?, ?);
-            INSERT INTO CUSTOMER (email, address, phone_no) VALUES (?, ?, ?)`;
+        var sql = `INSERT INTO USER(email, name, pword, salt, account_type) VALUES(?, ?, ?, ?, ?);
+            INSERT INTO CUSTOMER (email, address, phone_no) VALUES(?, ?, ?);
+            INSERT INTO TOKENS(email, refresh_token, expiration) VALUES(?, ?, ?)`;
         await (
             await connection
         )
@@ -38,16 +54,19 @@ router.post("/signup", async (req, res) => {
                 name,
                 hash,
                 salt,
-                refreshToken,
                 accountType,
                 email,
                 null,
                 null,
+                email,
+                refreshToken,
+                expiration,
             ])
             .then(() => {
                 res.cookie("refreshToken", refreshToken, {
                     maxAge: authConfig.jwtRefreshExpiration * 1000,
                     httpOnly: true,
+                    sameSite: "lax",
                 });
                 res.status(200).send({
                     message: "User table updated.",
