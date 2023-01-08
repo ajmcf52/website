@@ -63,7 +63,7 @@ router.post("/signup", async (req, res) => {
                 expiration,
             ])
             .then(() => {
-                res.cookie("refreshToken", refreshToken, {
+                res.cookie("shoeDawgRefreshToken", refreshToken, {
                     maxAge: authConfig.jwtRefreshExpiration * 1000,
                     httpOnly: true,
                     sameSite: "lax",

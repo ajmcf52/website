@@ -15,6 +15,7 @@ var indexRouter = require("./routes/index");
 var customerAPI = require("./routes/customerAPI");
 var signup = require("./routes/signup");
 var login = require("./routes/login");
+var refreshToken = require("./routes/refreshToken");
 
 var app = express();
 
@@ -33,6 +34,7 @@ app.use(indexRouter);
 app.use(customerAPI);
 app.use(signup);
 app.use(login);
+app.use(refreshToken);
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {

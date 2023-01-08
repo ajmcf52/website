@@ -47,9 +47,17 @@ router.post("/login", async (req, res) => {
 
         const { accessToken, refreshToken } = await generateTokens(payload);
 
-        res.cookie("refreshToken", refreshToken, {
+        // TODO insert refreshToken into DB with user's email and an expiration.
+
+        res.cookie("shoeDawgRefreshToken", refreshToken, {
             maxAge: authConfig.jwtRefreshExpiration * 1000,
             httpOnly: true,
+            sameSite: "lax",
+        });
+        res.cookie("shoeDawgUserEmail", email, {
+            maxAge: authConfig.jwtRefreshExpiration * 1000,
+            httpOnly: true,
+            sameSite: "lax",
         });
         res.status(200).send({
             email,
