@@ -1,5 +1,5 @@
-import React from "react";
-import axios from "axios";
+import React, { useEffect } from "react";
+import axios from "../../api/axios";
 import { connect } from "react-redux";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 import Stack from "@mui/material/Stack";
@@ -8,7 +8,7 @@ import { StyledButton } from "../buttons/styled/StyledButton";
 import LoginButton from "../buttons/LoginButton";
 import LogoutButton from "../buttons/LogoutButton";
 import SignupButton from "../buttons/SignupButton";
-import { setCacheCookie, getCacheCookie } from "../../utils/CacheCookie";
+import { TokenEventCreator } from "../../actions/TokenEvent";
 import "./css/LandingPage.css";
 
 const navBarBtnTheme = createTheme({
@@ -56,78 +56,83 @@ export const NavBar = (props) => {
     );
 };
 
-class LandingPage extends React.Component {
-    constructor(props) {
-        super(props);
-        this.state = {
-            url: window.location.href,
-        };
-    }
-
-    async componentDidMount() {
-        let shoeCookie = await getCacheCookie(/^Shoester+=$/);
-        if (shoeCookie === undefined) {
-            axios.get("http://localhost:8000/addContext", {}).then((res) => {
-                shoeCookie = res.data["sessionValue"];
-                const expiry = res.data["sessionExpiry"];
-
-                console.log("shoecookie --> ", shoeCookie);
-                console.log("expiry --> ", expiry);
-                setCacheCookie("Shoester", shoeCookie);
-            });
+const LandingPage = (props) => {
+    const validateToken = async () => {
+        try {
+            await axios
+                .get("/refreshToken", {
+                    headers: { "Content-Type": "application/json" },
+                    withCredentials: true,
+                })
+                .then((res) => {
+                    console.log(res.data);
+                    console.log(res.data.accessToken);
+                });
+        } catch (error) {
+            console.error(error);
         }
-    }
-    render() {
-        return (
-            <div className="home-root">
-                <NavBar
-                    theme={navBarBtnTheme}
-                    buttons={
-                        this.props.isLoggedIn
-                            ? [<LogoutButton name="logout" />]
-                            : [
-                                  <LoginButton name="login" />,
-                                  <SignupButton name="signup" />,
-                              ]
-                    }
-                />
-                <div className="inner-root">
-                    <h1 className="shoester-h1">
-                        Welcome to {<br />}
-                        {this.props.isLoggedIn ? (
-                            <div>
-                                <span className="shoester-span">
-                                    Shoester,{" "}
-                                </span>
-                                <span className="shoester-span">
-                                    {this.props.firstName}!
-                                </span>
-                            </div>
-                        ) : (
-                            <span className="shoester-span">Shoester!</span>
-                        )}
-                    </h1>
-                    <ThemeProvider theme={shopBtnTheme}>
-                        <StyledButton
-                            style={{ fontSize: "64px" }}
-                            variant="contained"
-                            color="primary"
-                            className="shopBtn"
-                            onClick={() => {
-                                <Navigate to="/shop" replace={true} />;
-                            }}>
-                            Shop
-                        </StyledButton>
-                    </ThemeProvider>
-                </div>
+    };
+
+    useEffect(() => {
+        console.log("initializing LandingPage..");
+        const initValidation = async () => {
+            await validateToken();
+        };
+        initValidation();
+    }, []);
+
+    return (
+        <div className="home-root">
+            <NavBar
+                theme={navBarBtnTheme}
+                buttons={
+                    props.isLoggedIn
+                        ? [<LogoutButton name="logout" />]
+                        : [
+                              <LoginButton name="login" />,
+                              <SignupButton name="signup" />,
+                          ]
+                }
+            />
+            <div className="inner-root">
+                <h1 className="shoester-h1">
+                    Welcome to {<br />}
+                    {props.isLoggedIn ? (
+                        <div>
+                            <span className="shoester-span">Shoester, </span>
+                            <span className="shoester-span">
+                                {props.firstName}!
+                            </span>
+                        </div>
+                    ) : (
+                        <span className="shoester-span">Shoester!</span>
+                    )}
+                </h1>
+                <ThemeProvider theme={shopBtnTheme}>
+                    <StyledButton
+                        style={{ fontSize: "64px" }}
+                        variant="contained"
+                        color="primary"
+                        className="shopBtn"
+                        onClick={() => {
+                            <Navigate to="/shop" replace={true} />;
+                        }}>
+                        Shop
+                    </StyledButton>
+                </ThemeProvider>
             </div>
-        );
-    }
-}
+        </div>
+    );
+};
+
+const mapDispatchToProps = {
+    stashToken: TokenEventCreator.newToken,
+};
 
 const mapStateToProps = (state, props) => ({
     isLoggedIn: state && state.login && state.login.loggedIn,
     firstName: state && state.login && state.login.fname,
+    accessToken: state && state.login && state.login.accessToken,
 });
 
 export default connect(mapStateToProps, null)(LandingPage);
