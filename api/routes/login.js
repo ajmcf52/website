@@ -49,18 +49,20 @@ router.post("/login", async (req, res) => {
          */
         const emailCookie = req.cookies.shoeDawgUserEmail;
         const tokenCookie = req.cookies.shoeDawgRefreshToken;
+        let tokenUpdated = false;
         if (
             emailCookie !== undefined &&
             tokenCookie !== undefined &&
             emailCookie === email
         ) {
-            const expiration = generateRTExpiry(
+            const expiration = await generateRTExpiry(
                 authConfig.jwtRefreshExpiration
             );
             const sql = `UPDATE TOKENS SET expiration=? WHERE email=? AND refresh_token=?`;
             await (
                 await connection
             ).execute(sql, [expiration, emailCookie, tokenCookie]);
+            tokenUpdated = true;
         } else if (emailCookie !== undefined && tokenCookie !== undefined) {
             const sql = `DELETE FROM TOKENS WHERE email=? AND refresh_token=?`;
             await (await connection).execute(sql, [emailCookie, tokenCookie]);
@@ -71,7 +73,12 @@ router.post("/login", async (req, res) => {
 
         const { accessToken, refreshToken } = await generateTokens(payload);
 
-        // TODO insert refreshToken into DB with user's email and an expiration.
+        if (!tokenUpdated) {
+            var sql = `INSERT INTO TOKENS(email, refresh_token, expiration) VALUES(?, ?, ?)`;
+            await (
+                await connection
+            ).execute(sql, [email, refreshToken, expiration]);
+        }
 
         res.cookie("shoeDawgRefreshToken", refreshToken, {
             maxAge: authConfig.jwtRefreshExpiration * 1000,

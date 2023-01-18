@@ -60,7 +60,7 @@ const LoginForm = ({ triggerLogin }) => {
                 .then((res) => {
                     console.log(JSON.stringify(res?.data));
                     const { accessToken, fname, email } = res.data;
-                    triggerLogin({ email, fname });
+                    triggerLogin({ email, fname, accessToken });
                     setAuth({ email, pword, accessToken });
                 });
             setEmail("");

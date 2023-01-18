@@ -69,7 +69,7 @@ const LandingPage = (props) => {
                     console.log(res.data.accessToken);
                 });
         } catch (error) {
-            console.error(error);
+            console.error(error.response.data);
         }
     };
 

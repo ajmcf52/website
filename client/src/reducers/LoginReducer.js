@@ -12,6 +12,7 @@ export default function LoginReducer(state = initState, action) {
                 loggedIn: true,
                 email: action.userInfo.email,
                 fname: action.userInfo.fname,
+                accessToken: action.userInfo.accessToken,
             };
         case LoginEventType.logout:
             return {
