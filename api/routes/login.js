@@ -4,6 +4,7 @@ var jwt = require("jsonwebtoken");
 var authConfig = require("../config/authConfig");
 var connection = require("../config/connection");
 var generateTokens = require("../util/generateTokens");
+var generateRTExpiry = require("../util/generateRTExpiry");
 
 var router = express.Router();
 
@@ -42,6 +43,29 @@ router.post("/login", async (req, res) => {
     }
     const name = pwMatchResults[0]["name"];
     if (name !== undefined) {
+        /**
+           getting here signifies a successful login
+           (hashed & salted password was a match in the DB)
+         */
+        const emailCookie = req.cookies.shoeDawgUserEmail;
+        const tokenCookie = req.cookies.shoeDawgRefreshToken;
+        if (
+            emailCookie !== undefined &&
+            tokenCookie !== undefined &&
+            emailCookie === email
+        ) {
+            const expiration = generateRTExpiry(
+                authConfig.jwtRefreshExpiration
+            );
+            const sql = `UPDATE TOKENS SET expiration=? WHERE email=? AND refresh_token=?`;
+            await (
+                await connection
+            ).execute(sql, [expiration, emailCookie, tokenCookie]);
+        } else if (emailCookie !== undefined && tokenCookie !== undefined) {
+            const sql = `DELETE FROM TOKENS WHERE email=? AND refresh_token=?`;
+            await (await connection).execute(sql, [emailCookie, tokenCookie]);
+        }
+
         const fname = name.split(" ")[0];
         const payload = { email: email, fname: fname };
 

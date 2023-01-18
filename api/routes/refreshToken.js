@@ -1,15 +1,13 @@
 var express = require("express");
 var jwt = require("jsonwebtoken");
-var { v4: uuidv4 } = require("uuid");
 var dformat = require("date-fns/format");
 var dateAdd = require("date-fns/add");
 var authConfig = require("../config/authConfig");
 var connection = require("../config/connection");
+var generateRTExpiry = require("../util/generateRTExpiry");
 var generateTokens = require("../util/generateTokens");
 
 var router = express.Router();
-
-const TIMESTAMP_FORMAT = "yyyy-MM-dd HH:mm:ss";
 
 /**
 In order for this route to work as intended, the user
@@ -24,21 +22,24 @@ router.get("/refreshToken", async (req, res) => {
     var email = req.cookies.shoeDawgUserEmail || req.body.email;
     var refreshToken = req.cookies.shoeDawgRefreshToken;
     if (email === undefined || refreshToken === undefined) {
-        res.status(403).send({ errText: "Unauthorized; please log in." });
+        res.status(403).send({
+            errText: "Email and/or RT is undefined; please log in.",
+        });
         return;
     }
 
     const getRefreshTokenInfo = async (userEmail, userRefreshToken) => {
         var sql = `SELECT refresh_token FROM TOKENS as t WHERE t.email=? AND t.refresh_token=?`;
-        const [results] = await (
-            await connection
-        ).execute(sql, [userEmail, userRefreshToken]);
-        return Promise.resolve(results);
+        return Promise.resolve(
+            await (await connection).execute(sql, [userEmail, userRefreshToken])
+        );
     };
 
     const [results] = await getRefreshTokenInfo(email, refreshToken);
-    if (refreshTokenInfo.length === 0) {
-        res.status(403).send({ errText: "Unauthorized; please log in." });
+    if (results.length === 0) {
+        res.status(403).send({
+            errText: "No RT stored in the database; please log in.",
+        });
         return;
     }
 
@@ -47,7 +48,9 @@ router.get("/refreshToken", async (req, res) => {
         var decoded = jwt.verify(matchingToken, authConfig.secret);
     } catch (error) {
         // if this pops, it's likely TokenExpiredError or JsonWebTokenError
-        res.status(403).send({ errText: "Unauthorized; please log in." });
+        res.status(403).send({
+            errText: `${error.name}: ${error.message}. Please log in.`,
+        });
         return;
     }
 
@@ -65,10 +68,7 @@ router.get("/refreshToken", async (req, res) => {
         email,
         fname,
     });
-    var expiration = dformat(
-        dateAdd(new Date(), { seconds: authConfig.jwtRefreshExpiration }),
-        TIMESTAMP_FORMAT
-    );
+    var expiration = await generateRTExpiry(authConfig.jwtRefreshExpiration);
     const updateRefreshToken = async (email, newToken, oldToken, expiry) => {
         var sql = `UPDATE TOKENS SET refresh_token=?, expiration=? WHERE email=? AND refresh_token=?`;
         await (
