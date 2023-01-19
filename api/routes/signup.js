@@ -28,7 +28,7 @@ router.post("/signup", async (req, res) => {
         TIMESTAMP_FORMAT
     );
 
-    const { refreshToken, accessToken } = await generateTokens({
+    const { refreshToken, accessToken, rtSecret } = await generateTokens({
         email,
         fname,
     });
@@ -45,7 +45,7 @@ router.post("/signup", async (req, res) => {
         hash = await hashPword(pword);
         var sql = `INSERT INTO USER(email, name, pword, salt, account_type) VALUES(?, ?, ?, ?, ?);
             INSERT INTO CUSTOMER (email, address, phone_no) VALUES(?, ?, ?);
-            INSERT INTO TOKENS(email, refresh_token, expiration) VALUES(?, ?, ?)`;
+            INSERT INTO TOKENS(email, refresh_token, expiration, rt_secret) VALUES(?, ?, ?, ?)`;
         await (
             await connection
         )
@@ -61,6 +61,7 @@ router.post("/signup", async (req, res) => {
                 email,
                 refreshToken,
                 expiration,
+                rtSecret,
             ])
             .then(() => {
                 res.cookie("shoeDawgRefreshToken", refreshToken, {

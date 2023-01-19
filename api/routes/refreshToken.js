@@ -27,15 +27,15 @@ router.get("/refreshToken", async (req, res) => {
         });
         return;
     }
-
-    const getRefreshTokenInfo = async (userEmail, userRefreshToken) => {
-        var sql = `SELECT refresh_token FROM TOKENS as t WHERE t.email=? AND t.refresh_token=?`;
+    console.log("COOKIES --> ", refreshToken, email);
+    const confirmRefreshToken = async (userEmail, userRefreshToken) => {
+        var sql = `SELECT refresh_token, rt_secret FROM TOKENS AS t WHERE t.email=? AND t.refresh_token=?`;
         return Promise.resolve(
             await (await connection).execute(sql, [userEmail, userRefreshToken])
         );
     };
 
-    const [results] = await getRefreshTokenInfo(email, refreshToken);
+    const [results] = await confirmRefreshToken(email, refreshToken);
     if (results.length === 0) {
         res.status(403).send({
             errText: "No RT stored in the database; please log in.",
@@ -44,8 +44,9 @@ router.get("/refreshToken", async (req, res) => {
     }
 
     const matchingToken = results[0]["refresh_token"];
+    const tokenSecret = results[0]["rt_secret"];
     try {
-        var decoded = jwt.verify(matchingToken, authConfig.secret);
+        var decoded = jwt.verify(matchingToken, tokenSecret);
     } catch (error) {
         // if this pops, it's likely TokenExpiredError or JsonWebTokenError
         res.status(403).send({
@@ -63,17 +64,29 @@ router.get("/refreshToken", async (req, res) => {
     var nameResult = await getUserName(email);
     var fname = nameResult[0]["name"].split(" ")[0];
 
-    // making it here means the token has been found and verified.
-    const { renewedRefreshToken, renewedAccessToken } = await generateTokens({
+    // getting to this point means the token has been found and verified.
+    const {
+        accessToken: renewedAccessToken,
+        refreshToken: renewedRefreshToken,
+        rtSecret,
+    } = await generateTokens({
         email,
         fname,
     });
     var expiration = await generateRTExpiry(authConfig.jwtRefreshExpiration);
     const updateRefreshToken = async (email, newToken, oldToken, expiry) => {
-        var sql = `UPDATE TOKENS SET refresh_token=?, expiration=? WHERE email=? AND refresh_token=?`;
+        console.log(
+            "UPDATE ARGS -->> ",
+            email,
+            newToken,
+            oldToken,
+            expiry,
+            rtSecret
+        );
+        var sql = `UPDATE TOKENS SET refresh_token=?, expiration=?, rt_secret=? WHERE email=? AND refresh_token=?`;
         await (
             await connection
-        ).execute(sql, [newToken, expiry, email, oldToken]);
+        ).execute(sql, [newToken, expiry, rtSecret, email, oldToken]);
     };
 
     await updateRefreshToken(
@@ -88,8 +101,15 @@ router.get("/refreshToken", async (req, res) => {
         httpOnly: true,
         sameSite: "lax",
     });
+    res.cookie("shoeDawgUserEmail", email, {
+        maxAge: authConfig.jwtRefreshExpiration * 1000,
+        httpOnly: true,
+        sameSite: "lax",
+    });
     res.status(200).send({
         message: "Token refreshed.",
+        email,
+        fname,
         renewedAccessToken,
     });
 });

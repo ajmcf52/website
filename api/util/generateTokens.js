@@ -7,11 +7,12 @@ const generateTokens = async (userInfo) => {
     const accessToken = jwt.sign(payload, jwtConfig.secret, {
         expiresIn: jwtConfig.jwtExpiration,
     });
-    const refreshToken = jwt.sign(payload, uuidv4(), {
+    const rtSecret = uuidv4();
+    const refreshToken = jwt.sign(payload, rtSecret, {
         expiresIn: jwtConfig.jwtRefreshExpiration,
     });
     try {
-        return Promise.resolve({ accessToken, refreshToken });
+        return Promise.resolve({ accessToken, refreshToken, rtSecret });
     } catch (error) {
         return Promise.reject(error);
     }

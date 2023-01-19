@@ -9,6 +9,7 @@ import LoginButton from "../buttons/LoginButton";
 import LogoutButton from "../buttons/LogoutButton";
 import SignupButton from "../buttons/SignupButton";
 import { TokenEventCreator } from "../../actions/TokenEvent";
+import { LoginEventCreator } from "../../actions/LoginEvent";
 import "./css/LandingPage.css";
 
 const navBarBtnTheme = createTheme({
@@ -57,6 +58,7 @@ export const NavBar = (props) => {
 };
 
 const LandingPage = (props) => {
+    const triggerLogin = props.triggerLogin;
     const validateToken = async () => {
         try {
             await axios
@@ -66,7 +68,14 @@ const LandingPage = (props) => {
                 })
                 .then((res) => {
                     console.log(res.data);
-                    console.log(res.data.accessToken);
+                    console.log(res.data.renewedAccessToken);
+                    if (res.data.renewedAccessToken !== undefined) {
+                        triggerLogin({
+                            email: res.data.email,
+                            fname: res.data.fname,
+                            accessToken: res.data.renewedAccessToken,
+                        });
+                    }
                 });
         } catch (error) {
             console.error(error.response.data);
@@ -79,7 +88,7 @@ const LandingPage = (props) => {
             await validateToken();
         };
         initValidation();
-    }, []);
+    });
 
     return (
         <div className="home-root">
@@ -126,7 +135,7 @@ const LandingPage = (props) => {
 };
 
 const mapDispatchToProps = {
-    stashToken: TokenEventCreator.newToken,
+    triggerLogin: LoginEventCreator.login,
 };
 
 const mapStateToProps = (state, props) => ({
@@ -135,4 +144,4 @@ const mapStateToProps = (state, props) => ({
     accessToken: state && state.login && state.login.accessToken,
 });
 
-export default connect(mapStateToProps, null)(LandingPage);
+export default connect(mapStateToProps, mapDispatchToProps)(LandingPage);

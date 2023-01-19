@@ -49,42 +49,77 @@ router.post("/login", async (req, res) => {
          */
         const emailCookie = req.cookies.shoeDawgUserEmail;
         const tokenCookie = req.cookies.shoeDawgRefreshToken;
+        const expiration = await generateRTExpiry(
+            authConfig.jwtRefreshExpiration
+        );
         let tokenUpdated = false;
+        /**
+            entering here when client-side cookies match the user that has just logged in.
+        */
         if (
             emailCookie !== undefined &&
             tokenCookie !== undefined &&
             emailCookie === email
         ) {
-            const expiration = await generateRTExpiry(
-                authConfig.jwtRefreshExpiration
-            );
-            const sql = `UPDATE TOKENS SET expiration=? WHERE email=? AND refresh_token=?`;
-            await (
+            console.log("COOKIES -->", emailCookie, tokenCookie);
+
+            let sql = `SELECT * FROM TOKENS WHERE email=? AND refresh_token=?`;
+            var [result] = await (
                 await connection
-            ).execute(sql, [expiration, emailCookie, tokenCookie]);
-            tokenUpdated = true;
+            ).execute(sql, [email, tokenCookie]);
+
+            /* 
+            if the token already exists in the DB, update it. Otherwise, a later SQL statement
+            will handle the insert by way of checking a flag.
+            */
+            if (result.length !== 0) {
+                sql = `UPDATE TOKENS SET expiration=? WHERE email=? AND refresh_token=?`;
+                await (
+                    await connection
+                ).execute(sql, [expiration, emailCookie, tokenCookie]);
+                tokenUpdated = true;
+                console.log("Updating existing RT!");
+            }
         } else if (emailCookie !== undefined && tokenCookie !== undefined) {
             const sql = `DELETE FROM TOKENS WHERE email=? AND refresh_token=?`;
             await (await connection).execute(sql, [emailCookie, tokenCookie]);
+            console.log("Deleting existing RT!");
         }
 
         const fname = name.split(" ")[0];
         const payload = { email: email, fname: fname };
-
-        const { accessToken, refreshToken } = await generateTokens(payload);
+        const {
+            accessToken,
+            refreshToken: newRefreshToken,
+            rtSecret,
+        } = await generateTokens(payload);
 
         if (!tokenUpdated) {
-            var sql = `INSERT INTO TOKENS(email, refresh_token, expiration) VALUES(?, ?, ?)`;
+            var sql = `INSERT INTO TOKENS(email, refresh_token, expiration, rt_secret) VALUES(?, ?, ?, ?)`;
             await (
                 await connection
-            ).execute(sql, [email, refreshToken, expiration]);
+            ).execute(sql, [email, newRefreshToken, expiration, rtSecret]);
+
+            /**
+            we stash the correct refresh token. If we are inserting a refresh
+            token for this user for the first time, we must overwrite the previous
+            cookie with the new value.
+            */
+            res.cookie("shoeDawgRefreshToken", newRefreshToken, {
+                maxAge: authConfig.jwtRefreshExpiration * 1000,
+                httpOnly: true,
+                sameSite: "lax",
+            });
+            console.log("Inserting new RT!");
+        } else {
+            // here, we are overwriting a cookie, same value, with an renewed expiry.
+            res.cookie("shoeDawgRefreshToken", tokenCookie, {
+                maxAge: authConfig.jwtRefreshExpiration * 1000,
+                httpOnly: true,
+                sameSite: "lax",
+            });
         }
 
-        res.cookie("shoeDawgRefreshToken", refreshToken, {
-            maxAge: authConfig.jwtRefreshExpiration * 1000,
-            httpOnly: true,
-            sameSite: "lax",
-        });
         res.cookie("shoeDawgUserEmail", email, {
             maxAge: authConfig.jwtRefreshExpiration * 1000,
             httpOnly: true,
