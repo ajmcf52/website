@@ -58,6 +58,7 @@ export const NavBar = (props) => {
 };
 
 const LandingPage = (props) => {
+    const isLoggedIn = props.isLoggedIn;
     const triggerLogin = props.triggerLogin;
     const validateToken = async () => {
         try {
@@ -78,15 +79,24 @@ const LandingPage = (props) => {
                     }
                 });
         } catch (error) {
-            console.error(error.response.data);
+            if (!isLoggedIn) {
+                // we only care to see this if we haven't already validated.
+                console.error(error.response.data);
+            }
         }
     };
 
     useEffect(() => {
+        if (props.accessToken !== undefined) {
+            // If we have an access token, this means our refresh token is valid.
+            // Hence, no need to validate.
+            return;
+        }
         console.log("initializing LandingPage..");
         const initValidation = async () => {
             await validateToken();
         };
+
         initValidation();
     });
 

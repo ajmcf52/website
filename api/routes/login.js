@@ -1,6 +1,5 @@
 var express = require("express");
 var bcrypt = require("bcrypt");
-var jwt = require("jsonwebtoken");
 var authConfig = require("../config/authConfig");
 var connection = require("../config/connection");
 var generateTokens = require("../util/generateTokens");

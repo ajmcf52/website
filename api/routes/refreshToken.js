@@ -27,7 +27,7 @@ router.get("/refreshToken", async (req, res) => {
         });
         return;
     }
-    console.log("COOKIES --> ", refreshToken, email);
+    console.log("\n\nCOOKIES --> ", refreshToken, email);
     const confirmRefreshToken = async (userEmail, userRefreshToken) => {
         var sql = `SELECT refresh_token, rt_secret FROM TOKENS AS t WHERE t.email=? AND t.refresh_token=?`;
         return Promise.resolve(
@@ -77,11 +77,11 @@ router.get("/refreshToken", async (req, res) => {
     const updateRefreshToken = async (email, newToken, oldToken, expiry) => {
         console.log(
             "UPDATE ARGS -->> ",
-            email,
-            newToken,
-            oldToken,
-            expiry,
-            rtSecret
+            `\n\nEMAIL: ${email}`,
+            `\n\nNEW TOKEN: ${newToken}`,
+            `\n\nOLD TOKEN: ${oldToken}`,
+            `\n\nEXPIRY: ${expiry}`,
+            `\n\nRT SECRET: ${rtSecret}`
         );
         var sql = `UPDATE TOKENS SET refresh_token=?, expiration=?, rt_secret=? WHERE email=? AND refresh_token=?`;
         await (
