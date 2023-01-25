@@ -10,3 +10,13 @@
     background-color: #453229;
     z-index: 1;
 }
+
+.shop-header {
+    font-family: "Explora", cursive;
+}
+
+.selection-container {
+    overflow-y: scroll;
+    height: 700px;
+    width: 1000px;
+}
