@@ -1,5 +1,4 @@
 var express = require("express");
-var authConfig = require("../config/authConfig");
 var connection = require("../config/connection");
 
 var router = express.Router();
@@ -25,6 +24,12 @@ router.delete("/logout", async (req, res) => {
             maxAge: 5,
             httpOnly: true,
             sameSite: "lax",
+        });
+        res.status(200).send("User has been logged out.");
+    } else {
+        res.status(403).send({
+            errText:
+                "Proper logout could not be completed; logging out anyway.",
         });
     }
 });

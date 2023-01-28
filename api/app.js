@@ -12,7 +12,6 @@ axios.defaults.headers.post["Content-Type"] = "multipart/form-data";
 // axios.post("/register");
 
 var indexRouter = require("./routes/index");
-var customerAPI = require("./routes/customerAPI");
 var signup = require("./routes/signup");
 var login = require("./routes/login");
 var refreshToken = require("./routes/refreshToken");
@@ -31,7 +30,6 @@ app.use(cookieParser());
 app.use(express.static(path.join(__dirname, "public")));
 
 app.use(indexRouter);
-app.use(customerAPI);
 app.use(signup);
 app.use(login);
 app.use(refreshToken);

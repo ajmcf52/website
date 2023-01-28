@@ -1,10 +1,12 @@
-import React from "react";
-import { useNavigate } from "react-router-dom";
+import React, { useEffect } from "react";
+import { connect } from "react-redux";
 import { createTheme } from "@mui/material/styles";
 import { NavBar } from "./LandingPage";
+import { validateToken } from "../../utils/validateRefreshToken";
 import LoginButton from "../buttons/LoginButton";
 import SignupButton from "../buttons/SignupButton";
 import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
+import { LoginEventCreator } from "../../actions/LoginEvent";
 
 const navShopBtnTheme = createTheme({
     palette: {
@@ -19,8 +21,7 @@ const navShopBtnTheme = createTheme({
     },
 });
 
-export default function ShopPage() {
-    /**
+/**
     in order to display the shoes that we have for sale,
     we will need to do the following:
     - make an API call that retrieves an array of tuples,
@@ -43,6 +44,9 @@ export default function ShopPage() {
 
     */
 
+const ShopPage = (props) => {
+    const { isLoggedIn, firstName, accessToken } = props;
+
     return (
         <div className="shop-root">
             <NavBar
@@ -55,4 +59,16 @@ export default function ShopPage() {
             <div className="selection-container"></div>
         </div>
     );
-}
+};
+
+const mapDispatchToProps = {
+    triggerLogin: LoginEventCreator.login,
+    triggerLogout: LoginEventCreator.logout,
+};
+const mapStateToProps = (state, props) => ({
+    isLoggedIn: state && state.login && state.login.loggedIn,
+    firstName: state && state.login && state.login.fname,
+    accessToken: state && state.login && state.login.accessToken,
+});
+
+export default connect(mapStateToProps, mapDispatchToProps)(ShopPage);

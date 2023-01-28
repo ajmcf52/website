@@ -1,4 +1,4 @@
-import axios from "../../api/axios";
+import axios from "../api/axios";
 
 export const validateToken = async (triggerLoginFn, isLoggedIn) => {
     try {
@@ -8,8 +8,6 @@ export const validateToken = async (triggerLoginFn, isLoggedIn) => {
                 withCredentials: true,
             })
             .then((res) => {
-                console.log(res.data);
-                console.log(res.data.renewedAccessToken);
                 if (res.data.renewedAccessToken !== undefined) {
                     triggerLoginFn({
                         email: res.data.email,

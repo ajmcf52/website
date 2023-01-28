@@ -1,5 +1,4 @@
 import React, { useEffect } from "react";
-import axios from "../../api/axios";
 import { connect } from "react-redux";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 import Stack from "@mui/material/Stack";
@@ -60,6 +59,7 @@ export const NavBar = (props) => {
 const LandingPage = (props) => {
     const isLoggedIn = props.isLoggedIn;
     const triggerLogin = props.triggerLogin;
+    const triggerLogout = props.triggerLogout;
 
     useEffect(() => {
         if (props.accessToken !== undefined) {
@@ -81,7 +81,12 @@ const LandingPage = (props) => {
                 theme={navBarBtnTheme}
                 buttons={
                     props.isLoggedIn
-                        ? [<LogoutButton name="logout" />]
+                        ? [
+                              <LogoutButton
+                                  name="logout"
+                                  triggerLogout={triggerLogout}
+                              />,
+                          ]
                         : [
                               <LoginButton name="login" />,
                               <SignupButton name="signup" />,
@@ -121,6 +126,7 @@ const LandingPage = (props) => {
 
 const mapDispatchToProps = {
     triggerLogin: LoginEventCreator.login,
+    triggerLogout: LoginEventCreator.logout,
 };
 
 const mapStateToProps = (state, props) => ({
