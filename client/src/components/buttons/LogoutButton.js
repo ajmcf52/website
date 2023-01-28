@@ -1,10 +1,11 @@
+import axios from "../../api/axios";
 import { StyledButton } from "./styled/StyledButton";
 import { useNavigate } from "react-router-dom";
 import { connect } from "react-redux";
 import { LoginEventCreator } from "../../actions/LoginEvent";
 
 function LogoutButton(props) {
-    const { triggerlogout } = props;
+    const { triggerLogout, email } = props;
     let navigate = useNavigate();
     return (
         <StyledButton
@@ -12,8 +13,24 @@ function LogoutButton(props) {
             color="primary"
             className="btn btn-logout"
             variant="contained"
-            onClick={() => {
-                triggerlogout();
+            onClick={async () => {
+                try {
+                    await axios
+                        .delete(
+                            "/logout",
+                            { email },
+                            {
+                                headers: { "Content-Type": "application/json" },
+                                withCredentials: true,
+                            }
+                        )
+                        .then((res) => {
+                            console.log(JSON.stringify(res?.data));
+                        });
+                } catch (error) {
+                    console.error(error);
+                }
+                triggerLogout();
                 navigate("/");
             }}>
             Logout
@@ -25,4 +42,8 @@ const mapDispatchToProps = {
     triggerlogout: LoginEventCreator.logout,
 };
 
-export default connect(null, mapDispatchToProps)(LogoutButton);
+const mapStateToProps = (state, props) => ({
+    email: state && state.login && state.login.email,
+});
+
+export default connect(mapStateToProps, mapDispatchToProps)(LogoutButton);
