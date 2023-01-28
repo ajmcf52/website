@@ -8,8 +8,8 @@ import { StyledButton } from "../buttons/styled/StyledButton";
 import LoginButton from "../buttons/LoginButton";
 import LogoutButton from "../buttons/LogoutButton";
 import SignupButton from "../buttons/SignupButton";
-import { TokenEventCreator } from "../../actions/TokenEvent";
 import { LoginEventCreator } from "../../actions/LoginEvent";
+import { validateToken } from "../../utils/validateRefreshToken";
 import "./css/LandingPage.css";
 
 const navBarBtnTheme = createTheme({
@@ -60,31 +60,6 @@ export const NavBar = (props) => {
 const LandingPage = (props) => {
     const isLoggedIn = props.isLoggedIn;
     const triggerLogin = props.triggerLogin;
-    const validateToken = async () => {
-        try {
-            await axios
-                .get("/refreshToken", {
-                    headers: { "Content-Type": "application/json" },
-                    withCredentials: true,
-                })
-                .then((res) => {
-                    console.log(res.data);
-                    console.log(res.data.renewedAccessToken);
-                    if (res.data.renewedAccessToken !== undefined) {
-                        triggerLogin({
-                            email: res.data.email,
-                            fname: res.data.fname,
-                            accessToken: res.data.renewedAccessToken,
-                        });
-                    }
-                });
-        } catch (error) {
-            if (!isLoggedIn) {
-                // we only care to see this if we haven't already validated.
-                console.error(error.response.data);
-            }
-        }
-    };
 
     useEffect(() => {
         if (props.accessToken !== undefined) {
@@ -94,7 +69,7 @@ const LandingPage = (props) => {
         }
         console.log("initializing LandingPage..");
         const initValidation = async () => {
-            await validateToken();
+            await validateToken(triggerLogin, isLoggedIn);
         };
 
         initValidation();
