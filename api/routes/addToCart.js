@@ -1,14 +1,29 @@
 var express = require("express");
 var connection = require("../config/connection");
-const { database } = require("../config/dbConfig");
+var confirmRefreshToken = require("../util/confirmRefreshToken");
 
 var router = express.Router();
 
 router.post("/addToCart", async (req, res) => {
-    const { refreshToken, sku, quantity } = req.body;
-    // assuming that refresh token is valid here...
+    const { sku, quantity } = req.body;
 
-    // TODO validate refresh token before adding to cart?
+    var email = req.cookies.shoeDawgUserEmail || req.body.email;
+    var refreshToken = req.cookies.shoeDawgRefreshToken;
+
+    if (email === undefined || refreshToken === undefined) {
+        res.status(403).send({
+            errText: "Email and/or RT is undefined; please log in.",
+        });
+        return;
+    }
+
+    const [results] = await confirmRefreshToken(email, refreshToken);
+    if (results.length === 0) {
+        res.status(403).send({
+            errText: "No RT stored in the database; please log in.",
+        });
+    }
+
     var sql = `SELECT cart_id FROM SHOPPING_CART WHERE refresh_token=?`;
     const [result] = await (await connection).execute(sql, [refreshToken]);
     if (result.length === 0) {

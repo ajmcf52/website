@@ -14,8 +14,6 @@ const TIMESTAMP_FORMAT = "yyyy-MM-dd HH:mm:ss";
 this route fires when a user presses "submit" in SignupForm.js.
 */
 router.post("/signup", async (req, res) => {
-    console.log("req body --> ", req.body);
-
     const name = req.body.name;
     const email = req.body.email;
     const pword = req.body.pword;

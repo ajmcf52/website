@@ -60,8 +60,6 @@ router.post("/login", async (req, res) => {
             tokenCookie !== undefined &&
             emailCookie === email
         ) {
-            console.log("COOKIES -->", emailCookie, tokenCookie);
-
             let sql = `SELECT * FROM TOKENS WHERE email=? AND refresh_token=?`;
             var [result] = await (
                 await connection

@@ -6,6 +6,7 @@ var authConfig = require("../config/authConfig");
 var connection = require("../config/connection");
 var generateRTExpiry = require("../util/generateRTExpiry");
 var generateTokens = require("../util/generateTokens");
+var confirmRefreshToken = require("../util/confirmRefreshToken");
 
 var router = express.Router();
 
@@ -28,12 +29,6 @@ router.get("/refreshToken", async (req, res) => {
         return;
     }
     console.log("\n\nCOOKIES --> ", refreshToken, email);
-    const confirmRefreshToken = async (userEmail, userRefreshToken) => {
-        var sql = `SELECT refresh_token, rt_secret FROM TOKENS AS t WHERE t.email=? AND t.refresh_token=?`;
-        return Promise.resolve(
-            await (await connection).execute(sql, [userEmail, userRefreshToken])
-        );
-    };
 
     const [results] = await confirmRefreshToken(email, refreshToken);
     if (results.length === 0) {
