@@ -6,10 +6,7 @@ var logger = require("morgan");
 var cors = require("cors");
 var axios = require("axios");
 
-//var dbConfig = require("./config/dbConfig");
-
-axios.defaults.headers.post["Content-Type"] = "multipart/form-data";
-// axios.post("/register");
+axios.default.headers.post["Content-Type"] = "multipart/form-data";
 
 var indexRouter = require("./routes/index");
 var signup = require("./routes/signup");
@@ -27,7 +24,7 @@ app.use(express.json());
 app.use(cors({ origin: ["http://localhost:3000"], credentials: true }));
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
-app.use(express.static(path.join(__dirname, "public")));
+app.use(express.static(path.join(__dirname, "/public")));
 
 app.use(indexRouter);
 app.use(signup);

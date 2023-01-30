@@ -1,4 +1,3 @@
-const { es } = require("date-fns/locale");
 var express = require("express");
 var connection = require("../config/connection");
 var confirmRefreshToken = require("../util/confirmRefreshToken");
