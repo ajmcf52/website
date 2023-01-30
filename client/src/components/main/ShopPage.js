@@ -7,6 +7,7 @@ import LoginButton from "../buttons/LoginButton";
 import SignupButton from "../buttons/SignupButton";
 import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
 import { LoginEventCreator } from "../../actions/LoginEvent";
+import "./css/ShopPage.css";
 
 const navShopBtnTheme = createTheme({
     palette: {
@@ -49,11 +50,11 @@ const ShopPage = (props) => {
 
     return (
         <div className="shop-root">
+            <div className="shop-page"></div>
             <NavBar
                 theme={navShopBtnTheme}
                 buttons={[<LoginButton />, <SignupButton />]}></NavBar>
-
-            <header>
+            <header className="page-header">
                 <h2 className="shop-header">Check these puppies out!</h2>
             </header>
             <div className="selection-container"></div>
