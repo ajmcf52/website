@@ -36,3 +36,5 @@ router.post("/addToCart", async (req, res) => {
     await (await connection).execute(sql, [null, cartId, sku, quantity]);
     res.status(200).send("Added to cart.");
 });
+
+module.exports = router;

@@ -1,4 +1,5 @@
 import React, { useEffect } from "react";
+import axios from "../../api/axios";
 import { connect } from "react-redux";
 import { createTheme } from "@mui/material/styles";
 import { NavBar } from "./LandingPage";
@@ -47,6 +48,34 @@ const navShopBtnTheme = createTheme({
 
 const ShopPage = (props) => {
     const { isLoggedIn, firstName, accessToken } = props;
+
+    useEffect(() => {
+        const getShoes = async () => {
+            while (true) {
+                var reattempt = false;
+                var success = false;
+                try {
+                    await axios
+                        .get("/getAllShoes", {
+                            headers: { "Content-Type": "application/json" },
+                            withCredentials: true,
+                        })
+                        .then((res) => {
+                            console.log(res.data);
+                            success = true;
+                        });
+                } catch (error) {
+                    if (error.response.status === 412) {
+                        // if this pops, we need a new access token.
+                    }
+                    console.error("ERROR! --> ", error);
+                    console.log("errtext --> ", error.response.data.errText);
+                }
+            }
+        };
+
+        getShoes();
+    });
 
     return (
         <div className="shop-root">

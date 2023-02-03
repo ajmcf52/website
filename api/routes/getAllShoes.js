@@ -31,3 +31,5 @@ router.get("/getAllShoes", async (req, res) => {
     console.log(results);
     res.status(200).send({ shoeInfo: results });
 });
+
+module.exports = router;

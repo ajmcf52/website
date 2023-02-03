@@ -14,6 +14,8 @@ export const validateToken = async (triggerLoginFn, isLoggedIn) => {
                         fname: res.data.fname,
                         accessToken: res.data.renewedAccessToken,
                     });
+                } else {
+                    console.error("(validateRefreshToken): Login Fn Failed!");
                 }
             });
     } catch (error) {

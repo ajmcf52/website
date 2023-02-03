@@ -26,3 +26,5 @@ router.get("/getCartCount", async (req, res) => {
     let returnValue = result.length === 0 ? 0 : result[0]["quantity"];
     res.status(200).send({ cartCount: returnValue });
 });
+
+module.exports = router;

@@ -6,12 +6,15 @@ var logger = require("morgan");
 var cors = require("cors");
 var axios = require("axios");
 
-axios.default.headers.post["Content-Type"] = "multipart/form-data";
+axios.defaults.headers.post["Content-Type"] = "multipart/form-data";
 
 var indexRouter = require("./routes/index");
 var signup = require("./routes/signup");
 var login = require("./routes/login");
 var refreshToken = require("./routes/refreshToken");
+var addToCart = require("./routes/addToCart");
+var getAllShoes = require("./routes/getAllShoes");
+var getCartCount = require("./routes/getCartCount");
 
 var app = express();
 
@@ -30,6 +33,9 @@ app.use(indexRouter);
 app.use(signup);
 app.use(login);
 app.use(refreshToken);
+app.use(addToCart);
+app.use(getAllShoes);
+app.use(getCartCount);
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {
