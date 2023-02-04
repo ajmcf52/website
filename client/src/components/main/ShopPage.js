@@ -9,7 +9,9 @@ import LoginButton from "../buttons/LoginButton";
 import SignupButton from "../buttons/SignupButton";
 import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
 import { LoginEventCreator } from "../../actions/LoginEvent";
+import { ShoeEventCreator } from "../../actions/ShoeEvent";
 import "./css/ShopPage.css";
+import { Typography } from "@mui/material";
 
 const navShopBtnTheme = createTheme({
     palette: {
@@ -49,7 +51,14 @@ const navShopBtnTheme = createTheme({
 
 const ShopPage = (props) => {
     const navigate = useNavigate();
-    const { accessToken, email, isLoggedIn, triggerLogin } = props;
+    const {
+        accessToken,
+        email,
+        isLoggedIn,
+        triggerLogin,
+        loadShoes,
+        shoeInfo,
+    } = props;
 
     useEffect(() => {
         const initLogin = async () => {
@@ -74,7 +83,8 @@ const ShopPage = (props) => {
                 });
         };
         const getShoes = async () => {
-            console.log("AT --> ", accessToken);
+            if (props.shoeInfo && props.shoeInfo.length > 0) return;
+
             await axios
                 .get("/getAllShoes", {
                     params: { email, at: accessToken },
@@ -83,7 +93,7 @@ const ShopPage = (props) => {
                 })
                 .then((res) => {
                     console.log("response data --> ", res.data);
-                    props.shoeInfo = res.data.shoeInfo;
+                    loadShoes(res.data.shoeInfo);
                 })
                 .catch((error) => {
                     console.log("HIGHIGHIHIGHGI -->> ", error.response);
@@ -92,7 +102,7 @@ const ShopPage = (props) => {
         initLogin();
         getShoes();
     });
-    console.log(props);
+    console.log("baseurl --> ", window.location.origin);
     return (
         <div className="shop-root">
             <div className="shop-page"></div>
@@ -104,8 +114,26 @@ const ShopPage = (props) => {
             </header>
             <div className="selection-container">
                 {props.shoeInfo &&
-                    props.shoeInfo.map((dataObj) => {
-                        return <div className="shoe-container"></div>;
+                    props.shoeInfo.map((dataObj, index) => {
+                        let imgUrl = `http://localhost:8000/${dataObj.img_url}`;
+                        console.log(imgUrl);
+                        return (
+                            <div key={index} className="shoe-container">
+                                <img
+                                    className="shoe-pic"
+                                    alt={dataObj.sku}
+                                    src={imgUrl}></img>
+                                <div className="shoe-text-container">
+                                    <Typography
+                                        style={{
+                                            marginLeft: "5%",
+                                        }}>{`${dataObj.name}`}</Typography>
+                                    <Typography style={{ marginRight: "5%" }}>
+                                        {`${dataObj.price}`}
+                                    </Typography>
+                                </div>
+                            </div>
+                        );
                     })}
             </div>
         </div>
@@ -115,12 +143,14 @@ const ShopPage = (props) => {
 const mapDispatchToProps = {
     triggerLogin: LoginEventCreator.login,
     triggerLogout: LoginEventCreator.logout,
+    loadShoes: ShoeEventCreator.shoes,
 };
 const mapStateToProps = (state, props) => ({
     isLoggedIn: state && state.login && state.login.loggedIn,
     firstName: state && state.login && state.login.fname,
     accessToken: state && state.login && state.login.accessToken,
     email: state && state.login && state.login.email,
+    shoeInfo: state && state.shoe && state.shoe.shoeInfo,
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(ShopPage);

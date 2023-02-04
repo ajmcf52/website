@@ -6,7 +6,7 @@ import { LoginEventCreator } from "../actions/LoginEvent";
 const triggerLogin = LoginEventCreator.login;
 
 var instance = axios.create({
-    baseURL: "http://localhost:8000",
+    baseURL: "http://localhost:8000/",
 });
 
 // instance.interceptors.response.use(

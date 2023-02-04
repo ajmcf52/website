@@ -45,14 +45,42 @@ body {
     flex-direction: row;
     flex-flow: row wrap;
     align-content: center;
+    justify-content: space-evenly;
 }
 
 .shoe-container {
     position: relative;
-    width: 40%;
-    height: 35%;
+    width: 45%;
+    height: 40%;
     background-color: rgb(0, 0, 0, 0.15);
     border-radius: 8px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+.shoe-text-container {
+    position: relative;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+}
+
+.shoe-name {
+    margin-left: 20px;
+}
+
+.shoe-price {
+    margin-right: 5%;
+}
+
+.shoe-pic {
+    width: 80%;
+    height: 80%;
+    border-radius: 8px;
+    left: 10%;
+    top: 10%;
+    position: relative;
 }
 
 .shop-page {
