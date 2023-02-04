@@ -1,7 +1,8 @@
 import React, { useEffect } from "react";
-import axios from "../../api/axios";
+import { useNavigate } from "react-router-dom";
 import { connect } from "react-redux";
 import { createTheme } from "@mui/material/styles";
+import axios from "../../api/axios";
 import { NavBar } from "./LandingPage";
 import { validateToken } from "../../utils/validateRefreshToken";
 import LoginButton from "../buttons/LoginButton";
@@ -47,36 +48,51 @@ const navShopBtnTheme = createTheme({
     */
 
 const ShopPage = (props) => {
-    const { isLoggedIn, firstName, accessToken } = props;
+    const navigate = useNavigate();
+    const { accessToken, email, isLoggedIn, triggerLogin } = props;
 
     useEffect(() => {
-        const getShoes = async () => {
-            while (true) {
-                var reattempt = false;
-                var success = false;
-                try {
-                    await axios
-                        .get("/getAllShoes", {
-                            headers: { "Content-Type": "application/json" },
-                            withCredentials: true,
-                        })
-                        .then((res) => {
-                            console.log(res.data);
-                            success = true;
+        const initLogin = async () => {
+            if (isLoggedIn) return; // no need to send a request if we're already logged in.
+            await axios
+                .get("/refreshToken", {
+                    headers: { "Content-Type": "application/json" },
+                    withCredentials: true,
+                })
+                .then((res) => {
+                    if (res.data.renewedAccessToken !== undefined) {
+                        triggerLogin({
+                            email: res.data.email,
+                            fname: res.data.fname,
+                            accessToken: res.data.renewedAccessToken,
                         });
-                } catch (error) {
-                    if (error.response.status === 412) {
-                        // if this pops, we need a new access token.
                     }
-                    console.error("ERROR! --> ", error);
-                    console.log("errtext --> ", error.response.data.errText);
-                }
-            }
+                })
+                .catch((err) => {
+                    console.log(err.response.data);
+                    //navigate("/");
+                });
         };
-
+        const getShoes = async () => {
+            console.log("AT --> ", accessToken);
+            await axios
+                .get("/getAllShoes", {
+                    params: { email, at: accessToken },
+                    headers: { "Content-Type": "application/json" },
+                    withCredentials: true,
+                })
+                .then((res) => {
+                    console.log("response data --> ", res.data);
+                    props.shoeInfo = res.data.shoeInfo;
+                })
+                .catch((error) => {
+                    console.log("HIGHIGHIHIGHGI -->> ", error.response);
+                });
+        };
+        initLogin();
         getShoes();
     });
-
+    console.log(props);
     return (
         <div className="shop-root">
             <div className="shop-page"></div>
@@ -86,7 +102,12 @@ const ShopPage = (props) => {
             <header className="page-header">
                 <h2 className="shop-header">Check these puppies out!</h2>
             </header>
-            <div className="selection-container"></div>
+            <div className="selection-container">
+                {props.shoeInfo &&
+                    props.shoeInfo.map((dataObj) => {
+                        return <div className="shoe-container"></div>;
+                    })}
+            </div>
         </div>
     );
 };
@@ -99,6 +120,7 @@ const mapStateToProps = (state, props) => ({
     isLoggedIn: state && state.login && state.login.loggedIn,
     firstName: state && state.login && state.login.fname,
     accessToken: state && state.login && state.login.accessToken,
+    email: state && state.login && state.login.email,
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(ShopPage);

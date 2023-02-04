@@ -7,8 +7,9 @@ var confirmRefreshToken = require("../util/confirmRefreshToken");
 var router = express.Router();
 
 router.get("/getAllShoes", async (req, res) => {
-    var email = req.cookies.shoeDawgUserEmail || req.body.email;
-    var { accessToken } = req.body;
+    var email = req.cookies.shoeDawgUserEmail || req.query.email;
+    var accessToken = req.query.at;
+    console.log(`email --> ${req.query.email}, at --> ${accessToken}`);
 
     if (accessToken === undefined) {
         res.status(412).send({

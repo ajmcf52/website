@@ -12,7 +12,11 @@ const generateTokens = async (userInfo) => {
         expiresIn: jwtConfig.jwtRefreshExpiration,
     });
     try {
-        return Promise.resolve({ accessToken, refreshToken, rtSecret });
+        return Promise.resolve({
+            renewedAccessToken: accessToken,
+            renewedRefreshToken: refreshToken,
+            rtSecret,
+        });
     } catch (error) {
         return Promise.reject(error);
     }

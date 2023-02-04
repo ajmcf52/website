@@ -22,7 +22,7 @@ class App extends Component {
                     <Router>
                         <Suspense fallback={<div>Loading...</div>}>
                             <Routes>
-                                <Route path="/" element={<ShopPage />} />
+                                <Route path="/" element={<LandingPage />} />
                                 <Route path="/login" element={<LoginForm />} />
                                 <Route
                                     path="/signup"

@@ -85,24 +85,21 @@ router.post("/login", async (req, res) => {
 
         const fname = name.split(" ")[0];
         const payload = { email: email, fname: fname };
-        const {
-            accessToken,
-            refreshToken: newRefreshToken,
-            rtSecret,
-        } = await generateTokens(payload);
+        const { renewedAccessToken, renewedRefreshToken, rtSecret } =
+            await generateTokens(payload);
 
         if (!tokenUpdated) {
             var sql = `INSERT INTO TOKENS(email, refresh_token, expiration, rt_secret) VALUES(?, ?, ?, ?)`;
             await (
                 await connection
-            ).execute(sql, [email, newRefreshToken, expiration, rtSecret]);
+            ).execute(sql, [email, renewedRefreshToken, expiration, rtSecret]);
 
             /**
             we stash the correct refresh token. If we are inserting a refresh
             token for this user for the first time, we must overwrite the previous
             cookie with the new value.
             */
-            res.cookie("shoeDawgRefreshToken", newRefreshToken, {
+            res.cookie("shoeDawgRefreshToken", renewedRefreshToken, {
                 maxAge: authConfig.jwtRefreshExpiration * 1000,
                 httpOnly: true,
                 sameSite: "lax",
@@ -125,7 +122,7 @@ router.post("/login", async (req, res) => {
         res.status(200).send({
             email,
             fname,
-            accessToken,
+            accessToken: renewedAccessToken,
         });
     } else {
         res.status(422).send({

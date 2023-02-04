@@ -3,6 +3,7 @@ import { connect } from "react-redux";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 import Stack from "@mui/material/Stack";
 import { Navigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { StyledButton } from "../buttons/styled/StyledButton";
 import LoginButton from "../buttons/LoginButton";
 import LogoutButton from "../buttons/LogoutButton";
@@ -60,6 +61,7 @@ const LandingPage = (props) => {
     const isLoggedIn = props.isLoggedIn;
     const triggerLogin = props.triggerLogin;
     const triggerLogout = props.triggerLogout;
+    const navigate = useNavigate();
 
     useEffect(() => {
         if (props.accessToken !== undefined) {
@@ -114,7 +116,8 @@ const LandingPage = (props) => {
                         color="primary"
                         className="shopBtn"
                         onClick={() => {
-                            <Navigate to="/shop" replace={true} />;
+                            navigate("/shop");
+                            //<Navigate to="/shop" replace={true} />;
                         }}>
                         Shop
                     </StyledButton>

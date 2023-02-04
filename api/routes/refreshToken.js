@@ -18,7 +18,12 @@ one there, we can use the user's email to search the DB for
 an existing RT. If no existing RT can be sourced, we send back a 403.
 */
 router.get("/refreshToken", async (req, res) => {
-    //console.log(JSON.stringify(req.cookies));
+    const { accessToken } = req.body;
+    try {
+        jwt.verify(accessToken, authConfig.secret);
+        res.status(200).send("No need to refresh; access token is good.");
+        return;
+    } catch (error) {}
 
     var email = req.cookies.shoeDawgUserEmail || req.body.email;
     var refreshToken = req.cookies.shoeDawgRefreshToken;
@@ -28,7 +33,7 @@ router.get("/refreshToken", async (req, res) => {
         });
         return;
     }
-    console.log("\n\nCOOKIES --> ", refreshToken, email);
+    console.log("\n\nCOOKIES --> ", refreshToken, email, refreshToken.length);
 
     const [results] = await confirmRefreshToken(email, refreshToken);
     if (results.length === 0) {
@@ -52,7 +57,7 @@ router.get("/refreshToken", async (req, res) => {
 
     const getUserName = async (userEmail) => {
         var sql = `SELECT name FROM USER AS u WHERE u.email=?`;
-        let [results] = await (await connection).execute(sql, [email]);
+        let [results] = await (await connection).execute(sql, [userEmail]);
         return Promise.resolve(results);
     };
 
@@ -60,14 +65,11 @@ router.get("/refreshToken", async (req, res) => {
     var fname = nameResult[0]["name"].split(" ")[0];
 
     // getting to this point means the token has been found and verified.
-    const {
-        accessToken: renewedAccessToken,
-        refreshToken: renewedRefreshToken,
-        rtSecret,
-    } = await generateTokens({
-        email,
-        fname,
-    });
+    const { renewedAccessToken, renewedRefreshToken, rtSecret } =
+        await generateTokens({
+            email,
+            fname,
+        });
     var expiration = await generateRTExpiry(authConfig.jwtRefreshExpiration);
     const updateRefreshToken = async (email, newToken, oldToken, expiry) => {
         console.log(
