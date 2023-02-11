@@ -30,7 +30,7 @@ const LoginForm = ({ triggerLogin }) => {
 
     const [email, setEmail] = useState("");
     const [pword, setPword] = useState("");
-    const [errorText, setErrorText] = useState(" ");
+    const [errorText, setErrorText] = useState("");
     const [success, setSuccess] = useState(false);
     const [showPword, setShowPword] = useState(false);
 

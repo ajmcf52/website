@@ -1,7 +1,9 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { connect } from "react-redux";
 import { createTheme } from "@mui/material/styles";
+import { Typography } from "@mui/material";
+import { Button } from "@mui/material";
 import axios from "../../api/axios";
 import { NavBar } from "./LandingPage";
 import { validateToken } from "../../utils/validateRefreshToken";
@@ -11,7 +13,6 @@ import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
 import { LoginEventCreator } from "../../actions/LoginEvent";
 import { ShoeEventCreator } from "../../actions/ShoeEvent";
 import "./css/ShopPage.css";
-import { Typography } from "@mui/material";
 
 const navShopBtnTheme = createTheme({
     palette: {
@@ -51,14 +52,7 @@ const navShopBtnTheme = createTheme({
 
 const ShopPage = (props) => {
     const navigate = useNavigate();
-    const {
-        accessToken,
-        email,
-        isLoggedIn,
-        triggerLogin,
-        loadShoes,
-        shoeInfo,
-    } = props;
+    const { accessToken, email, isLoggedIn, triggerLogin, loadShoes, incrementSelectedQuantity, decrementSelectedQuantity, shoeInfo } = props;
 
     useEffect(() => {
         const initLogin = async () => {
@@ -93,22 +87,24 @@ const ShopPage = (props) => {
                 })
                 .then((res) => {
                     console.log("response data --> ", res.data);
-                    loadShoes(res.data.shoeInfo);
+                    let shoeInfo = res.data.shoeInfo;
+                    shoeInfo.forEach((obj) => {
+                        obj.selected_quantity = 1;
+                    });
+                    loadShoes(shoeInfo);
                 })
                 .catch((error) => {
-                    console.log("HIGHIGHIHIGHGI -->> ", error.response);
+                    console.error("ERROR --> ", error.response);
                 });
         };
         initLogin();
         getShoes();
     });
-    console.log("baseurl --> ", window.location.origin);
+
     return (
         <div className="shop-root">
             <div className="shop-page"></div>
-            <NavBar
-                theme={navShopBtnTheme}
-                buttons={[<LoginButton />, <SignupButton />]}></NavBar>
+            <NavBar theme={navShopBtnTheme} buttons={[<LoginButton />, <SignupButton />]}></NavBar>
             <header className="page-header">
                 <h2 className="shop-header">Check these puppies out!</h2>
             </header>
@@ -116,21 +112,56 @@ const ShopPage = (props) => {
                 {props.shoeInfo &&
                     props.shoeInfo.map((dataObj, index) => {
                         let imgUrl = `http://localhost:8000/${dataObj.img_url}`;
-                        console.log(imgUrl);
                         return (
-                            <div key={index} className="shoe-container">
-                                <img
-                                    className="shoe-pic"
-                                    alt={dataObj.sku}
-                                    src={imgUrl}></img>
-                                <div className="shoe-text-container">
+                            <div key={`outerCtn-${index}`} className="outer-shoe-container">
+                                <div key={`innerCtn-${index}`} className="inner-shoe-container">
+                                    <img key={`shoePic-${index}`} className="shoe-pic" alt={dataObj.sku} src={imgUrl}></img>
+                                    <div key={`shoeTxt-${index}`} className="shoe-text-container">
+                                        <Typography
+                                            key={`shoeName-${index}`}
+                                            style={{
+                                                marginLeft: "5%",
+                                            }}>{`${dataObj.name}`}</Typography>
+                                        <Typography key={`shoePrice-${index}`} style={{ marginRight: "5%" }}>
+                                            {`$${dataObj.price}`}
+                                        </Typography>
+                                    </div>
+                                </div>
+                                <div key={`addToCart-${index}`} className="add-to-cart-row">
                                     <Typography
+                                        key={`stockDisplay-${index}`}
                                         style={{
-                                            marginLeft: "5%",
-                                        }}>{`${dataObj.name}`}</Typography>
-                                    <Typography style={{ marginRight: "5%" }}>
-                                        {`${dataObj.price}`}
+                                            color: dataObj.quantity > 0 ? "#286e02" : "#f50707",
+                                            marginLeft: "2%",
+                                            marginTop: "-2%",
+                                            fontWeight: "bolder",
+                                        }}>
+                                        {dataObj.quantity > 0 ? "IN STOCK" : "OUT OF STOCK"}
                                     </Typography>
+                                    <Button key={`cartAddBtn-${index}`} className="cart-add-btn" variant="contained">
+                                        Add to Cart
+                                    </Button>
+                                    <div key={`addToCart-${index}`} className="add-to-cart">
+                                        <button
+                                            key={`plusBtn-${index}`}
+                                            className="plus-btn shop-btn"
+                                            onClick={() => {
+                                                incrementSelectedQuantity(shoeInfo, index);
+                                            }}>
+                                            {"+"}
+                                        </button>
+                                        <span key={`selectQuantity-${index}`} className="selected-quantity">
+                                            {dataObj.selected_quantity}
+                                        </span>
+                                        <button
+                                            key={`minusBtn-${index}`}
+                                            className="minus-btn shop-btn"
+                                            onClick={() => {
+                                                decrementSelectedQuantity(shoeInfo, index);
+                                            }}>
+                                            {"-"}
+                                        </button>
+                                    </div>
                                 </div>
                             </div>
                         );
@@ -144,6 +175,8 @@ const mapDispatchToProps = {
     triggerLogin: LoginEventCreator.login,
     triggerLogout: LoginEventCreator.logout,
     loadShoes: ShoeEventCreator.shoes,
+    incrementSelectedQuantity: ShoeEventCreator.quantitySelectIncr,
+    decrementSelectedQuantity: ShoeEventCreator.quantitySelectDecr,
 };
 const mapStateToProps = (state, props) => ({
     isLoggedIn: state && state.login && state.login.loggedIn,
