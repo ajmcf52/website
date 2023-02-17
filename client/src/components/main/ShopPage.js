@@ -9,9 +9,11 @@ import { NavBar } from "./LandingPage";
 import { validateToken } from "../../utils/validateRefreshToken";
 import LoginButton from "../buttons/LoginButton";
 import SignupButton from "../buttons/SignupButton";
+import ShopCartButton from "../buttons/ShopCartButton";
 import { LoginEventCreator } from "../../actions/LoginEvent";
 import { ShoeEventCreator } from "../../actions/ShoeEvent";
 import "./css/ShopPage.css";
+import LogoutButton from "../buttons/LogoutButton";
 
 const navShopBtnTheme = createTheme({
     palette: {
@@ -76,11 +78,11 @@ const ShopPage = (props) => {
         initLogin();
         getShoes();
     });
-
+    const navBarButtons = isLoggedIn ? [<LogoutButton />, <ShopCartButton />] : [<LoginButton />, <SignupButton />, <ShopCartButton />];
     return (
         <div className="shop-root">
             <div className="shop-page"></div>
-            <NavBar theme={navShopBtnTheme} buttons={[<LoginButton />, <SignupButton />]}></NavBar>
+            <NavBar theme={navShopBtnTheme} buttons={navBarButtons}></NavBar>
             <header className="page-header">
                 <h2 className="shop-header">Check these puppies out!</h2>
             </header>
