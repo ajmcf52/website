@@ -8,12 +8,13 @@ import axios from "../../api/axios";
 import { NavBar } from "./LandingPage";
 import { validateToken } from "../../utils/validateRefreshToken";
 import LoginButton from "../buttons/LoginButton";
+import LogoutButton from "../buttons/LogoutButton";
 import SignupButton from "../buttons/SignupButton";
 import ShopCartButton from "../buttons/ShopCartButton";
 import { LoginEventCreator } from "../../actions/LoginEvent";
 import { ShoeEventCreator } from "../../actions/ShoeEvent";
+import { CartEventCreator } from "../../actions/CartEvent";
 import "./css/ShopPage.css";
-import LogoutButton from "../buttons/LogoutButton";
 
 const navShopBtnTheme = createTheme({
     palette: {
@@ -30,7 +31,18 @@ const navShopBtnTheme = createTheme({
 
 const ShopPage = (props) => {
     const navigate = useNavigate();
-    const { accessToken, email, isLoggedIn, triggerLogin, loadShoes, incrementSelectedQuantity, decrementSelectedQuantity, shoeInfo } = props;
+    const {
+        accessToken,
+        email,
+        isLoggedIn,
+        triggerLogin,
+        loadShoes,
+        incrementSelectedQuantity,
+        decrementSelectedQuantity,
+        shoeInfo,
+        addToCart,
+        cartState,
+    } = props;
 
     useEffect(() => {
         const initLogin = async () => {
@@ -116,7 +128,13 @@ const ShopPage = (props) => {
                                         }}>
                                         {dataObj.quantity > 0 ? "IN STOCK" : "OUT OF STOCK"}
                                     </Typography>
-                                    <Button key={`cartAddBtn-${index}`} className="cart-add-btn" variant="contained">
+                                    <Button
+                                        key={`cartAddBtn-${index}`}
+                                        className="cart-add-btn"
+                                        variant="contained"
+                                        onClick={() => {
+                                            addToCart(cartState, dataObj.sku, dataObj.selected_quantity);
+                                        }}>
                                         Add to Cart
                                     </Button>
                                     <div key={`addToCart-${index}`} className="add-to-cart">
@@ -155,6 +173,7 @@ const mapDispatchToProps = {
     loadShoes: ShoeEventCreator.shoes,
     incrementSelectedQuantity: ShoeEventCreator.quantitySelectIncr,
     decrementSelectedQuantity: ShoeEventCreator.quantitySelectDecr,
+    addToCart: CartEventCreator.addToCart,
 };
 const mapStateToProps = (state, props) => ({
     isLoggedIn: state && state.login && state.login.loggedIn,
@@ -162,6 +181,7 @@ const mapStateToProps = (state, props) => ({
     accessToken: state && state.login && state.login.accessToken,
     email: state && state.login && state.login.email,
     shoeInfo: state && state.shoe && state.shoe.shoeInfo,
+    cartState: state && state.cart && state.cart.cartState,
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(ShopPage);
