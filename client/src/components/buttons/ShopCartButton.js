@@ -1,5 +1,6 @@
 import React from "react";
 import { connect } from "react-redux";
+import { DialogEventCreator } from "../../actions/DialogEvent";
 import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
 //import { useNavigate } from "react-router-dom";
 
@@ -12,27 +13,26 @@ class ShopCartButton extends React.Component {
     render() {
         return (
             <StyledButton
-                {...this.props}
                 startIcon={<ShoppingCartIcon />}
                 key="shop-cart"
                 className="btn btn-shop-cart"
                 color="primary"
                 variant="contained"
-                // onClick={() => {
-                //     /* TODO
-                //     navigate to user's shopping cart on button click. Should either be accessible
-                //     via
-                // */
-                // }}
-            >
+                onClick={() => {
+                    this.props.openOrderDialog();
+                }}>
                 {this.props.numcartitems}
             </StyledButton>
         );
     }
 }
 
+const mapDispatchToProps = {
+    openOrderDialog: DialogEventCreator.openOrderDialog,
+};
+
 const mapStateToProps = (state, props) => ({
     numcartitems: state && state.cart && state.cart.itemCount,
 });
 
-export default connect(mapStateToProps, null)(ShopCartButton);
+export default connect(mapStateToProps, mapDispatchToProps)(ShopCartButton);

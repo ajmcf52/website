@@ -11,6 +11,7 @@ import LoginButton from "../buttons/LoginButton";
 import LogoutButton from "../buttons/LogoutButton";
 import SignupButton from "../buttons/SignupButton";
 import ShopCartButton from "../buttons/ShopCartButton";
+import OrderDialog from "./OrderDialog";
 import { LoginEventCreator } from "../../actions/LoginEvent";
 import { ShoeEventCreator } from "../../actions/ShoeEvent";
 import { CartEventCreator } from "../../actions/CartEvent";
@@ -93,6 +94,7 @@ const ShopPage = (props) => {
     const navBarButtons = isLoggedIn ? [<LogoutButton />, <ShopCartButton />] : [<LoginButton />, <SignupButton />, <ShopCartButton />];
     return (
         <div className="shop-root">
+            <OrderDialog />
             <div className="shop-page"></div>
             <NavBar theme={navShopBtnTheme} buttons={navBarButtons}></NavBar>
             <header className="page-header">

@@ -1,15 +1,15 @@
 import { DialogEventType } from "../actions/DialogEvent";
 
 const initState = {
-    dialogIsOpen: false,
+    isOpen: false,
 };
 
 export default function DialogReducer(state = initState, action) {
     switch (action.type) {
         case DialogEventType.openOrderDialog:
-            return { ...state, dialogIsOpen: true };
+            return { ...state, isOpen: true };
         case DialogEventType.closeOrderDialog:
-            return { ...state, dialogIsOpen: false };
+            return { ...state, isOpen: false };
         default:
             return state;
     }
