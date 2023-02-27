@@ -4,6 +4,11 @@ var connection = require("../config/connection");
 
 var router = express.Router();
 
+const initializeCart = async () => {
+    var sql = `INSERT INTO CART(cart_id, refresh_token) VALUES(?,?)`;
+    await (await connection).query(sql, [null, refreshToken]);
+};
+
 router.get("/initCart", async (req, res) => {
     var isCartActive = req.cookies.isCartActive;
     if (isCartActive) {
@@ -17,10 +22,8 @@ router.get("/initCart", async (req, res) => {
         });
         return;
     }
-    const initializeCart = async () => {
-        var sql = `INSERT INTO CART(cart_id, refresh_token) VALUES(?,?)`;
-        await (await connection).query(sql, [null, refreshToken]);
-    };
+    await initializeCart();
+
     res.cookie("isCartActive", "true", {
         maxAge: authConfig.jwtRefreshExpiration * 1000,
         httpOnly: true,
@@ -29,4 +32,7 @@ router.get("/initCart", async (req, res) => {
     res.status(200).send("Cart initialized.");
 });
 
-module.exports = router;
+module.exports = {
+    router,
+    initializeCart,
+};
