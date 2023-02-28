@@ -15,6 +15,11 @@ var refreshToken = require("./routes/refreshToken");
 var addToCart = require("./routes/addToCart");
 var getAllShoes = require("./routes/getAllShoes");
 var getCartCount = require("./routes/getCartCount");
+var initCart = require("./routes/initCart");
+var addToCart = require("./routes/addToCart");
+var removeFromCart = require("./routes/removeFromCart");
+var clearCart = require("./routes/clearCart");
+var validateCart = require("./routes/validateCart");
 
 var app = express();
 
@@ -36,6 +41,11 @@ app.use(refreshToken);
 app.use(addToCart);
 app.use(getAllShoes);
 app.use(getCartCount);
+app.use(initCart);
+app.use(addToCart);
+app.use(removeFromCart);
+app.use(clearCart);
+app.use(validateCart);
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {

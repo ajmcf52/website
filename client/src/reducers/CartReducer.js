@@ -6,13 +6,13 @@ const initState = {
 };
 export default function CartReducer(state = initState, action) {
     let updatedCartState = undefined;
-    const oldCount = action.cartState.itemCount;
-    let currCount = action.cartState.itemCount;
+    const oldCount = state.itemCount;
+    let currCount = state.itemCount;
     let skuFound = false;
 
     switch (action.type) {
         case CartEventType.addToCart:
-            updatedCartState = action.cartState.map((obj) => {
+            updatedCartState = state.cartState.map((obj) => {
                 if (action.skuAdded === obj.sku) {
                     skuFound = true;
                     return {
@@ -29,7 +29,7 @@ export default function CartReducer(state = initState, action) {
             };
 
         case CartEventType.removeFromCart:
-            updatedCartState = action.cartState.map((obj) => {
+            updatedCartState = state.cartState.map((obj) => {
                 if (action.skuRemoved === obj.sku) {
                     return {
                         ...obj,
@@ -48,7 +48,7 @@ export default function CartReducer(state = initState, action) {
             let skuFoundArr = new Array(dataObjs.length);
             skuFoundArr.fill(false);
 
-            updatedCartState = action.cartState.map((obj) => {
+            updatedCartState = state.cartState.map((obj) => {
                 var i = 0;
                 for (const dataObj in dataObjs) {
                     if (dataObj.skuAdded === obj.sku) {
@@ -75,7 +75,7 @@ export default function CartReducer(state = initState, action) {
         case CartEventType.removeMany:
             dataObjs = action.dataObjs;
 
-            updatedCartState = action.cartState.map((obj) => {
+            updatedCartState = state.cartState.map((obj) => {
                 for (var dataObj in dataObjs) {
                     if (dataObj.skuRemoved === obj.sku) {
                         currCount = Math.max(0, currCount - dataObj.numRemoved);
