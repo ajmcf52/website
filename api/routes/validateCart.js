@@ -46,9 +46,9 @@ router.get("/validateCart", async (req, res) => {
         return;
     }
 
-    // at this point, cart is active. Must fetch contents.
+    // at this point, cart is active. Must get contents.
 
-    const fetchCartContents = async () => {
+    const getCartContents = async () => {
         var sql = `SELECT sku, quantity FROM CART_DETAILS NATURAL JOIN ON CART WHERE refresh_token=?`;
         const [results] = await (await connection).execute(sql, [matchingToken]);
         let resultArray = [];
@@ -59,7 +59,7 @@ router.get("/validateCart", async (req, res) => {
         }
         return resultArray;
     };
-    const cartContents = await fetchCartContents();
+    const cartContents = await getCartContents();
     res.status(200).send({
         message: "Cart validated.",
         cartContents,
