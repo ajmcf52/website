@@ -6,8 +6,10 @@ const initState = {
 };
 export default function CartReducer(state = initState, action) {
     let updatedCartState = undefined;
-    const oldItemCount = state.itemCount;
+    const oldCount = action.cartState.itemCount;
+    let currCount = action.cartState.itemCount;
     let skuFound = false;
+
     switch (action.type) {
         case CartEventType.addToCart:
             updatedCartState = action.cartState.map((obj) => {
@@ -23,8 +25,9 @@ export default function CartReducer(state = initState, action) {
             return {
                 ...state,
                 cartState: updatedCartState,
-                itemCount: oldItemCount + action.numAdded,
+                itemCount: currCount + action.numAdded,
             };
+
         case CartEventType.removeFromCart:
             updatedCartState = action.cartState.map((obj) => {
                 if (action.skuRemoved === obj.sku) {
@@ -37,8 +40,66 @@ export default function CartReducer(state = initState, action) {
             return {
                 ...state,
                 cartState: updatedCartState,
-                itemCount: Math.max(0, oldItemCount - action.numRemoved),
+                itemCount: Math.max(0, oldCount - action.numRemoved),
             };
+
+        case CartEventType.addMany:
+            let dataObjs = action.dataObjs;
+            let skuFoundArr = new Array(dataObjs.length);
+            skuFoundArr.fill(false);
+
+            updatedCartState = action.cartState.map((obj) => {
+                var i = 0;
+                for (const dataObj in dataObjs) {
+                    if (dataObj.skuAdded === obj.sku) {
+                        skuFoundArr[i] = true;
+                        currCount += dataObj.numAdded;
+                        return {
+                            ...obj,
+                            quantity: obj.quantity + dataObj.numAdded,
+                        };
+                    }
+                    i++;
+                }
+                return obj;
+            });
+
+            for (var i = 0; i < dataObjs.length; i++) {
+                if (!skuFoundArr[i]) {
+                    currCount += dataObjs[i].numAdded;
+                    updatedCartState.push({ sku: dataObjs[i].skuAdded, quantity: dataObjs[i].numAdded });
+                }
+            }
+            return { ...state, cartState: updatedCartState, itemCount: currCount };
+
+        case CartEventType.removeMany:
+            dataObjs = action.dataObjs;
+
+            updatedCartState = action.cartState.map((obj) => {
+                for (var dataObj in dataObjs) {
+                    if (dataObj.skuRemoved === obj.sku) {
+                        currCount = Math.max(0, currCount - dataObj.numRemoved);
+                        return {
+                            ...obj,
+                            quantity: Math.max(0, obj.quantity - dataObj.numRemoved),
+                        };
+                    }
+                }
+                return obj;
+            });
+            return {
+                ...state,
+                cartState: updatedCartState,
+                itemCount: currCount,
+            };
+
+        case CartEventType.clearCart:
+            return {
+                ...state,
+                cartState: [],
+                itemCount: 0,
+            };
+
         default:
             return state;
     }
