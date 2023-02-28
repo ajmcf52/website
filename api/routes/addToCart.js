@@ -1,7 +1,7 @@
 var express = require("express");
 var connection = require("../config/connection");
 var confirmRefreshToken = require("../util/confirmRefreshToken");
-
+var getCartId = require("../util/getCartId");
 var router = express.Router();
 
 router.post("/addToCart", async (req, res) => {
@@ -24,14 +24,13 @@ router.post("/addToCart", async (req, res) => {
         });
     }
 
-    var sql = `SELECT cart_id FROM SHOPPING_CART WHERE refresh_token=?`;
-    const [result] = await (await connection).execute(sql, [refreshToken]);
-    if (result.length === 0) {
+    const cartId = await getCartId(refreshToken);
+    if (cartId === null) {
         res.status(422).send({
             errText: "Supplied refresh token does not correspond to a cart!",
         });
+        return;
     }
-    var cartId = result[0]["cart_id"];
     sql = `INSERT INTO CART_DETAILS(cart_details_id, cart_id, sku, quantity) VALUES (?, ?, ?, ?)`;
     await (await connection).execute(sql, [null, cartId, sku, quantity]);
     res.status(200).send("Added to cart.");
