@@ -35,3 +35,5 @@ router.post("/clearCart", async (req, res) => {
 
     res.status(200).send("Cart has been cleared.");
 });
+
+module.exports = router;
