@@ -78,30 +78,32 @@ router.get("/refreshToken", async (req, res) => {
         var expiration = await generateRTExpiry(authConfig.jwtRefreshExpiration);
         var sql = `UPDATE TOKENS SET expiration=? WHERE email=? AND refresh_token=?`;
         await (await connection).execute(sql, [expiration, email, matchingToken]);
-        
-        res.cookie('shoeDawgRefreshToken', matchingToken, {
+
+        res.cookie("shoeDawgRefreshToken", matchingToken, {
             maxAge: authConfig.jwtRefreshExpiration * 1000,
             httpOnly: true,
-            sameSite: 'lax'
-        })
-        res.cookie('shoeDawgUserEmail', email, {
+            sameSite: "lax",
+        });
+        res.cookie("shoeDawgUserEmail", email, {
             maxAge: authConfig.jwtRefreshExpiration * 1000,
             httpOnly: true,
-            sameSite: 'lax'
-        })
+            sameSite: "lax",
+        });
+
+        console.log("keeping the same refresh token.");
+
         res.status(200).send({
             message: "AT refreshed.",
             email,
             fname,
-            renewedAccessToken
+            renewedAccessToken,
         });
-    }
-    else {
-    // if we enter here, RT has less than a week left, so we renew.
-        ({ renewedAccessToken, renewedRefreshToken, rtSecret }) = await generateTokens({
-        email,
-        fname,
-        });
+    } else {
+        // if we enter here, RT has less than a week left, so we renew.
+        ({ renewedAccessToken, renewedRefreshToken, rtSecret } = await generateTokens({
+            email,
+            fname,
+        }));
         var expiration = await generateRTExpiry(authConfig.jwtRefreshExpiration);
         const updateRefreshToken = async (email, newToken, oldToken, expiry) => {
             console.log(

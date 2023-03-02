@@ -7,9 +7,7 @@ const generateAT = async (userInfo) => {
         expiresIn: jwtConfig.jwtExpiration,
     });
     try {
-        return Promise.resolve({
-            renewedAccessToken: accessToken,
-        });
+        return Promise.resolve(accessToken);
     } catch (error) {
         return Promise.reject(error);
     }
