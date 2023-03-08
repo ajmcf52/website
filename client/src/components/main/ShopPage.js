@@ -150,11 +150,22 @@ const ShopPage = (props) => {
                                         className="cart-add-btn"
                                         variant="contained"
                                         onClick={async () => {
+                                            const getCurrCartQuantity = async (sku) => {
+                                                for (var i = 0; i < cartState.length; i++) {
+                                                    if (sku === cartState[i].sku) {
+                                                        return cartState[i].quantity;
+                                                    }
+                                                }
+                                                return undefined;
+                                            };
+                                            var currQuantity = await getCurrCartQuantity(dataObj.sku);
+
                                             addToCartRdx(cartState, dataObj.sku, dataObj.selected_quantity);
 
                                             var formData = new FormData();
                                             formData.append("sku", dataObj.sku);
-                                            formData.append("quantity", dataObj.selected_quantity);
+                                            formData.append("quantityToAdd", dataObj.selected_quantity);
+                                            formData.append("currQuantity", currQuantity);
                                             var config = {
                                                 headers: {
                                                     "Content-Type": "application/json",
