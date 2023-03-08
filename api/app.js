@@ -1,12 +1,15 @@
+var cookieParser = require("cookie-parser");
 var createError = require("http-errors");
 var express = require("express");
 var path = require("path");
-var cookieParser = require("cookie-parser");
 var logger = require("morgan");
 var cors = require("cors");
 var axios = require("axios");
 
-axios.defaults.headers.post["Content-Type"] = "multipart/form-data";
+axios.defaults.headers.common["Content-Type"] = "application/json";
+axios.defaults.headers.common["Access-Control-Allow-Credentials"] = true;
+axios.defaults.withCredentials = true;
+//axios.defaults.headers.common["Access-Control-Allow-Origin"] = "http://localhost:3000";
 
 var indexRouter = require("./routes/index");
 var signup = require("./routes/signup");
@@ -27,12 +30,19 @@ var app = express();
 app.set("views", path.join(__dirname, "views"));
 app.set("view engine", "jade");
 
+app.use(cors({ origin: ["http://localhost:3000"], credentials: true }));
+app.use(function (req, res, next) {
+    res.setHeader("Access-Control-Allow-Origin", "http://localhost:3000");
+    res.setHeader("Access-Control-Allow-Methods", "GET, POST", "OPTIONS");
+    res.setHeader("Access-Control-Allow-Headers", "X-Requested-With, content-type, Authorization, Cookie");
+    res.setHeader("Access-Control-Expose-Headers", "Cookie");
+    next();
+});
 app.use(logger("dev"));
 app.use(express.json());
-app.use(cors({ origin: ["http://localhost:3000"], credentials: true }));
 app.use(express.urlencoded({ extended: true }));
-app.use(cookieParser());
 app.use(express.static(path.join(__dirname, "/public")));
+app.use(cookieParser());
 
 app.use(indexRouter);
 app.use(signup);

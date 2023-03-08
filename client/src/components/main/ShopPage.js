@@ -7,6 +7,7 @@ import { Button } from "@mui/material";
 import axios from "../../api/axios";
 import { NavBar } from "./LandingPage";
 import { validateToken } from "../../utils/validateRefreshToken";
+import { fetchCartContents } from "../../utils/fetchCartContents";
 import LoginButton from "../buttons/LoginButton";
 import LogoutButton from "../buttons/LogoutButton";
 import SignupButton from "../buttons/SignupButton";
@@ -41,32 +42,11 @@ const ShopPage = (props) => {
         incrementSelectedQuantity,
         decrementSelectedQuantity,
         shoeInfo,
-        addToCart,
+        addToCartRdx,
         cartState,
     } = props;
 
     useEffect(() => {
-        const initLogin = async () => {
-            if (isLoggedIn) return; // no need to send a request if we're already logged in.
-            await axios
-                .get("/refreshToken", {
-                    headers: { "Content-Type": "application/json" },
-                    withCredentials: true,
-                })
-                .then((res) => {
-                    if (res.data.renewedAccessToken !== undefined) {
-                        triggerLogin({
-                            email: res.data.email,
-                            fname: res.data.fname,
-                            accessToken: res.data.renewedAccessToken,
-                        });
-                    }
-                })
-                .catch((err) => {
-                    console.log(err.response.data);
-                    //navigate("/");
-                });
-        };
         const getShoes = async () => {
             if (props.shoeInfo && props.shoeInfo.length > 0) return;
 
@@ -88,8 +68,43 @@ const ShopPage = (props) => {
                     console.error("ERROR --> ", error.response);
                 });
         };
-        initLogin();
-        getShoes();
+        const initLogin = async () => {
+            if (isLoggedIn) {
+                await axios
+                    .get("/initCart", {
+                        headers: { "Content-Type": "application/json" },
+                        withCredentials: true,
+                    })
+                    .then((res) => {})
+                    .catch(async (err) => {
+                        if (err.res.status === 304) {
+                            // 304 --> cart already init'd (validation needed)
+                            const [cartContents] = await fetchCartContents();
+                        }
+                    });
+                return;
+            }
+            await axios
+                .get("/refreshToken", {
+                    headers: { "Content-Type": "application/json" },
+                    withCredentials: true,
+                })
+                .then((res) => {
+                    if (res.data.renewedAccessToken !== undefined) {
+                        triggerLogin({
+                            email: res.data.email,
+                            fname: res.data.fname,
+                            accessToken: res.data.renewedAccessToken,
+                        });
+                    }
+                })
+                .catch((err) => {
+                    console.log(err.response.data);
+                    //navigate("/");
+                });
+        };
+
+        initLogin().then(getShoes);
     });
     const navBarButtons = isLoggedIn ? [<LogoutButton />, <ShopCartButton />] : [<LoginButton />, <SignupButton />, <ShopCartButton />];
     return (
@@ -134,8 +149,31 @@ const ShopPage = (props) => {
                                         key={`cartAddBtn-${index}`}
                                         className="cart-add-btn"
                                         variant="contained"
-                                        onClick={() => {
-                                            addToCart(cartState, dataObj.sku, dataObj.selected_quantity);
+                                        onClick={async () => {
+                                            addToCartRdx(cartState, dataObj.sku, dataObj.selected_quantity);
+
+                                            var formData = new FormData();
+                                            formData.append("sku", dataObj.sku);
+                                            formData.append("quantity", dataObj.selected_quantity);
+                                            var config = {
+                                                headers: {
+                                                    "Content-Type": "application/json",
+                                                    "Accept-Encoding": "gzip, br, deflate",
+                                                },
+                                                url: "/addToCart",
+                                                withCredentials: true,
+                                                method: "POST",
+                                                data: formData,
+                                            };
+
+                                            await axios
+                                                .request(config)
+                                                .then((res) => {
+                                                    console.log("Cart Table updated.");
+                                                })
+                                                .catch((err) => {
+                                                    console.error(`/addToCart (ERR): ${err.response.data.errText}`);
+                                                });
                                         }}>
                                         Add to Cart
                                     </Button>
@@ -175,7 +213,7 @@ const mapDispatchToProps = {
     loadShoes: ShoeEventCreator.shoes,
     incrementSelectedQuantity: ShoeEventCreator.quantitySelectIncr,
     decrementSelectedQuantity: ShoeEventCreator.quantitySelectDecr,
-    addToCart: CartEventCreator.addToCart,
+    addToCartRdx: CartEventCreator.addToCart,
 };
 const mapStateToProps = (state, props) => ({
     isLoggedIn: state && state.login && state.login.loggedIn,
