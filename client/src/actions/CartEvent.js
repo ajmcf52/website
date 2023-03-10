@@ -7,11 +7,13 @@ const CartEventType = {
 };
 
 const CartEventCreator = {
-    addToCart: (cartState, skuAdded, numAdded) => ({
+    addToCart: (cartState, skuAdded, numAdded, shoeName, shoePrice) => ({
         type: CartEventType.addToCart,
         cartState,
         skuAdded,
         numAdded,
+        shoeName,
+        shoePrice,
     }),
     addMany: (cartState, dataObjs) => ({
         type: CartEventType.addMany,

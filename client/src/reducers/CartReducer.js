@@ -21,7 +21,8 @@ export default function CartReducer(state = initState, action) {
                     };
                 } else return obj;
             });
-            if (!skuFound) updatedCartState.push({ sku: action.skuAdded, quantity: action.numAdded });
+            if (!skuFound)
+                updatedCartState.push({ sku: action.skuAdded, quantity: action.numAdded, shoeName: action.shoeName, shoePrice: action.shoePrice });
             return {
                 ...state,
                 cartState: updatedCartState,
@@ -29,14 +30,16 @@ export default function CartReducer(state = initState, action) {
             };
 
         case CartEventType.removeFromCart:
-            updatedCartState = state.cartState.map((obj) => {
-                if (action.skuRemoved === obj.sku) {
-                    return {
-                        ...obj,
-                        quantity: Math.max(0, obj.quantity - action.numRemoved),
-                    };
-                } else return obj;
-            });
+            updatedCartState = state.cartState
+                .map((obj) => {
+                    if (action.skuRemoved === obj.sku) {
+                        return {
+                            ...obj,
+                            quantity: obj.quantity - action.numRemoved,
+                        };
+                    } else return obj;
+                })
+                .filter((obj) => obj.quantity > 0);
             return {
                 ...state,
                 cartState: updatedCartState,
@@ -75,18 +78,20 @@ export default function CartReducer(state = initState, action) {
         case CartEventType.removeMany:
             dataObjs = action.dataObjs;
 
-            updatedCartState = state.cartState.map((obj) => {
-                for (var dataObj in dataObjs) {
-                    if (dataObj.skuRemoved === obj.sku) {
-                        currCount = Math.max(0, currCount - dataObj.numRemoved);
-                        return {
-                            ...obj,
-                            quantity: Math.max(0, obj.quantity - dataObj.numRemoved),
-                        };
+            updatedCartState = state.cartState
+                .map((obj) => {
+                    for (var dataObj in dataObjs) {
+                        if (dataObj.skuRemoved === obj.sku) {
+                            currCount = Math.max(0, currCount - dataObj.numRemoved);
+                            return {
+                                ...obj,
+                                quantity: obj.quantity - dataObj.numRemoved,
+                            };
+                        }
                     }
-                }
-                return obj;
-            });
+                    return obj;
+                })
+                .filter((obj) => obj.quantity > 0);
             return {
                 ...state,
                 cartState: updatedCartState,
