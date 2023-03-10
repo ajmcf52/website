@@ -1,6 +1,7 @@
 const LoginEventType = {
     login: "LOGIN",
     logout: "LOGOUT",
+    updateAT: "UPDATE_AT",
 };
 
 const LoginEventCreator = {
@@ -10,6 +11,10 @@ const LoginEventCreator = {
     }),
     logout: () => ({
         type: LoginEventType.logout,
+    }),
+    updateAT: (at) => ({
+        type: LoginEventType.updateAT,
+        accessToken: at,
     }),
 };
 

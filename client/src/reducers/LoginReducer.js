@@ -19,6 +19,11 @@ export default function LoginReducer(state = initState, action) {
                 ...state,
                 loggedIn: false,
             };
+        case LoginEventType.updateAT:
+            return {
+                ...state,
+                accessToken: action.accessToken,
+            };
         default:
             return state;
     }
