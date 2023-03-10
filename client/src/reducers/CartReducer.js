@@ -70,7 +70,12 @@ export default function CartReducer(state = initState, action) {
             for (var i = 0; i < dataObjs.length; i++) {
                 if (!skuFoundArr[i]) {
                     currCount += dataObjs[i].numAdded;
-                    updatedCartState.push({ sku: dataObjs[i].skuAdded, quantity: dataObjs[i].numAdded });
+                    updatedCartState.push({
+                        sku: dataObjs[i].skuAdded,
+                        quantity: dataObjs[i].numAdded,
+                        shoeName: dataObjs[i].shoeName,
+                        shoePrice: dataObjs[i].shoePrice,
+                    });
                 }
             }
             return { ...state, cartState: updatedCartState, itemCount: currCount };

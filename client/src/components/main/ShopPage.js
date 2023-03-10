@@ -79,7 +79,8 @@ const ShopPage = (props) => {
                     .catch(async (err) => {
                         if (err.res.status === 304) {
                             // 304 --> cart already init'd (validation needed)
-                            const [cartContents] = await fetchCartContents();
+                            const cartContents = await fetchCartContents();
+                            console.log(`shoppage cart contents --> ${cartContents}`);
                         }
                     });
                 return;
@@ -99,7 +100,7 @@ const ShopPage = (props) => {
                     }
                 })
                 .catch((err) => {
-                    console.log(err.response.data);
+                    console.error(err.response.data);
                     //navigate("/");
                 });
         };
@@ -159,8 +160,9 @@ const ShopPage = (props) => {
                                                 return undefined;
                                             };
                                             var currQuantity = await getCurrCartQuantity(dataObj.sku);
+                                            console.log(`currQ --> ${currQuantity}`);
 
-                                            addToCartRdx(cartState, dataObj.sku, dataObj.selected_quantity);
+                                            addToCartRdx(cartState, dataObj.sku, dataObj.selected_quantity, dataObj.name, dataObj.price);
 
                                             var formData = new FormData();
                                             formData.append("sku", dataObj.sku);
@@ -169,7 +171,6 @@ const ShopPage = (props) => {
                                             var config = {
                                                 headers: {
                                                     "Content-Type": "application/json",
-                                                    "Accept-Encoding": "gzip, br, deflate",
                                                 },
                                                 url: "/addToCart",
                                                 withCredentials: true,
