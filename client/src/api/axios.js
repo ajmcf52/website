@@ -1,4 +1,3 @@
-import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import store from "../store";
 import { LoginEventCreator } from "../actions/LoginEvent";
@@ -22,7 +21,7 @@ instance.interceptors.response.use(
         */
         if (err.response.status === 449 && !req.retry) {
             req.retry = true;
-            await axios
+            await instance
                 .get("/refreshToken", {
                     headers: { "Content-Type": "application/json" },
                     withCredentials: true,
