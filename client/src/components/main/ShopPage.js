@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
 import { connect } from "react-redux";
 import { createTheme } from "@mui/material/styles";
@@ -32,7 +32,7 @@ const navShopBtnTheme = createTheme({
 });
 
 const ShopPage = (props) => {
-    const navigate = useNavigate();
+    // const navigate = useNavigate();
     const {
         accessToken,
         email,
@@ -43,70 +43,92 @@ const ShopPage = (props) => {
         decrementSelectedQuantity,
         shoeInfo,
         addToCartRdx,
+        addManyToCartRdx,
         cartState,
     } = props;
 
-    useEffect(() => {
-        const getShoes = async () => {
-            if (props.shoeInfo && props.shoeInfo.length > 0) return;
+    var [appInit, setAppInit] = useState(false);
 
-            await axios
-                .get("/getAllShoes", {
-                    params: { email, at: accessToken },
-                    headers: { "Content-Type": "application/json" },
-                    withCredentials: true,
-                })
-                .then((res) => {
-                    console.log("response data --> ", res.data);
-                    let shoeInfo = res.data.shoeInfo;
-                    shoeInfo.forEach((obj) => {
-                        obj.selected_quantity = 1;
-                    });
-                    loadShoes(shoeInfo);
-                })
-                .catch((error) => {
-                    console.error("ERROR --> ", error.response);
+    const getShoes = useCallback(async () => {
+        if ((shoeInfo && shoeInfo.length > 0) || appInit) return;
+
+        await axios
+            .get("/getAllShoes", {
+                params: { email, at: accessToken },
+                headers: { "Content-Type": "application/json" },
+                withCredentials: true,
+            })
+            .then((res) => {
+                console.log("response data --> ", res.data);
+                let shoeInfo = res.data.shoeInfo;
+                shoeInfo.forEach((obj) => {
+                    obj.selected_quantity = 1;
                 });
-        };
-        const initLogin = async () => {
-            if (isLoggedIn) {
-                await axios
-                    .get("/initCart", {
-                        headers: { "Content-Type": "application/json" },
-                        withCredentials: true,
-                    })
-                    .then((res) => {})
-                    .catch(async (err) => {
-                        if (err.res.status === 304) {
-                            // 304 --> cart already init'd (validation needed)
-                            const cartContents = await fetchCartContents();
-                            console.log(`shoppage cart contents --> ${cartContents}`);
-                        }
-                    });
-                return;
-            }
+                loadShoes(shoeInfo);
+            })
+            .catch((error) => {
+                console.error("ERROR --> ", error.response);
+            });
+        setAppInit(true);
+    }, [accessToken, email, loadShoes, shoeInfo, appInit]);
+
+    const initLogin = useCallback(async () => {
+        if (isLoggedIn && !appInit) {
             await axios
-                .get("/refreshToken", {
+                .get("/initCart", {
                     headers: { "Content-Type": "application/json" },
                     withCredentials: true,
                 })
-                .then((res) => {
-                    if (res.data.renewedAccessToken !== undefined) {
-                        triggerLogin({
-                            email: res.data.email,
-                            fname: res.data.fname,
-                            accessToken: res.data.renewedAccessToken,
-                        });
+                .then(async (res) => {
+                    console.log(`here! status is ${res.status}`);
+                    if (res.status === 200) {
+                        await axios
+                            .get("/cartContents", {
+                                headers: { "Content-Type": "application/json" },
+                                withCredentials: true,
+                                params: {
+                                    at: accessToken,
+                                },
+                            })
+                            .then((res) => {
+                                console.log(`JSON response ---> ${JSON.stringify(res)}`);
+                                console.log(`cart contents: ${JSON.stringify(res.data.cartContents)}`);
+                                addManyToCartRdx(cartState, res.data.cartContents);
+                            })
+                            .catch((err) => {
+                                console.error(`ERROR (fetchCartContents) --> ${err.res.errText}`);
+                                return null;
+                            });
                     }
                 })
                 .catch((err) => {
-                    console.error(err.response.data);
-                    //navigate("/");
+                    console.error(`initCart error: ${err}`);
                 });
-        };
+            return;
+        }
+        await axios
+            .get("/refreshToken", {
+                headers: { "Content-Type": "application/json" },
+                withCredentials: true,
+            })
+            .then((res) => {
+                if (res.data.renewedAccessToken !== undefined) {
+                    triggerLogin({
+                        email: res.data.email,
+                        fname: res.data.fname,
+                        accessToken: res.data.renewedAccessToken,
+                    });
+                }
+            })
+            .catch((err) => {
+                console.error(err.response.data);
+            });
+    }, [accessToken, addManyToCartRdx, cartState, isLoggedIn, triggerLogin, appInit]);
 
+    useEffect(() => {
         initLogin().then(getShoes);
-    });
+    }, [initLogin, getShoes]);
+
     const navBarButtons = isLoggedIn ? [<LogoutButton />, <ShopCartButton />] : [<LoginButton />, <SignupButton />, <ShopCartButton />];
     return (
         <div className="shop-root">
@@ -226,6 +248,7 @@ const mapDispatchToProps = {
     incrementSelectedQuantity: ShoeEventCreator.quantitySelectIncr,
     decrementSelectedQuantity: ShoeEventCreator.quantitySelectDecr,
     addToCartRdx: CartEventCreator.addToCart,
+    addManyToCartRdx: CartEventCreator.addMany,
 };
 const mapStateToProps = (state, props) => ({
     isLoggedIn: state && state.login && state.login.loggedIn,
