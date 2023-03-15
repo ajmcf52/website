@@ -7,11 +7,10 @@ const confirmRefreshToken = require("../util/confirmRefreshToken");
 
 var router = express.Router();
 
-router.get("/validateCart", async (req, res) => {
+router.get("/cartContents", async (req, res) => {
     var email = req.cookies.shoeDawgUserEmail;
-    var accessToken = req.body.at || req.query.at;
+    var accessToken = req.query.at;
     var refreshToken = req.cookies.shoeDawgRefreshToken;
-
     if (accessToken === undefined) {
         res.status(449).send({
             errText: "Access Token is missing; please log in.",
@@ -60,7 +59,10 @@ router.get("/validateCart", async (req, res) => {
             httpOnly: true,
             sameSite: "lax",
         });
-        res.status(200).send("Cart that previously DNE has now been initialized.");
+        res.status(200).send({
+            message: "Cart that previously DNE has now been initialized.",
+            cartContents: [],
+        });
         return;
     }
 

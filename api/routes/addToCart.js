@@ -5,9 +5,9 @@ var getCartId = require("../util/getCartId");
 var router = express.Router();
 
 router.post("/addToCart", async (req, res) => {
-    const quantityToAdd = req.body.quantityToAdd || req.query.quantityToAdd;
-    const sku = req.body.sku || req.query.sku;
-    const currQuantity = req.body.currQuantity || req.query.currQuantity;
+    const quantityToAdd = parseInt(req.body.quantityToAdd);
+    const sku = req.body.sku;
+    const currQuantity = req.body.currQuantity === "undefined" ? undefined : parseInt(req.body.currQuantity);
 
     var email = req.cookies.shoeDawgUserEmail || req.body.email || req.query.email;
     var refreshToken = req.cookies.shoeDawgRefreshToken;
@@ -34,11 +34,12 @@ router.post("/addToCart", async (req, res) => {
         return;
     }
 
-    const nextQuantity = currQuantity + quantityToAdd;
-    if (currQuantity === "undefined") {
+    if (currQuantity === undefined) {
         sql = `INSERT INTO CART_DETAILS(cart_details_id, cart_id, sku, quantity) VALUES (?, ?, ?, ?)`;
         await (await connection).execute(sql, [null, cartId, sku, quantityToAdd]);
     } else {
+        const nextQuantity = currQuantity + quantityToAdd;
+
         sql = `UPDATE CART_DETAILS SET quantity=? WHERE cart_id=? AND sku=?`;
         await (await connection).execute(sql, [nextQuantity, cartId, sku]);
     }

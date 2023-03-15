@@ -13,29 +13,28 @@ export default function CartReducer(state = initState, action) {
     switch (action.type) {
         case CartEventType.addToCart:
             updatedCartState = state.cartState.map((obj) => {
-                if (action.skuAdded === obj.sku) {
+                if (action.sku === obj.sku) {
                     skuFound = true;
                     return {
                         ...obj,
-                        quantity: obj.quantity + action.numAdded,
+                        quantity: obj.quantity + action.quantity,
                     };
                 } else return obj;
             });
-            if (!skuFound)
-                updatedCartState.push({ sku: action.skuAdded, quantity: action.numAdded, shoeName: action.shoeName, shoePrice: action.shoePrice });
+            if (!skuFound) updatedCartState.push({ sku: action.sku, quantity: action.quantity, shoeName: action.name, shoePrice: action.price });
             return {
                 ...state,
                 cartState: updatedCartState,
-                itemCount: currCount + action.numAdded,
+                itemCount: currCount + action.quantity,
             };
 
         case CartEventType.removeFromCart:
             updatedCartState = state.cartState
                 .map((obj) => {
-                    if (action.skuRemoved === obj.sku) {
+                    if (action.sku === obj.sku) {
                         return {
                             ...obj,
-                            quantity: obj.quantity - action.numRemoved,
+                            quantity: obj.quantity - action.quantity,
                         };
                     } else return obj;
                 })
@@ -43,10 +42,13 @@ export default function CartReducer(state = initState, action) {
             return {
                 ...state,
                 cartState: updatedCartState,
-                itemCount: Math.max(0, oldCount - action.numRemoved),
+                itemCount: Math.max(0, oldCount - action.quantity),
             };
 
         case CartEventType.addMany:
+            if (state.cartState.length > 0) {
+                return state;
+            }
             let dataObjs = action.dataObjs;
             let skuFoundArr = new Array(dataObjs.length);
             skuFoundArr.fill(false);
@@ -54,12 +56,12 @@ export default function CartReducer(state = initState, action) {
             updatedCartState = state.cartState.map((obj) => {
                 var i = 0;
                 for (const dataObj in dataObjs) {
-                    if (dataObj.skuAdded === obj.sku) {
+                    if (dataObj.sku === obj.sku) {
                         skuFoundArr[i] = true;
-                        currCount += dataObj.numAdded;
+                        currCount += dataObj.quantity;
                         return {
                             ...obj,
-                            quantity: obj.quantity + dataObj.numAdded,
+                            quantity: obj.quantity + dataObj.quantity,
                         };
                     }
                     i++;
@@ -69,12 +71,12 @@ export default function CartReducer(state = initState, action) {
 
             for (var i = 0; i < dataObjs.length; i++) {
                 if (!skuFoundArr[i]) {
-                    currCount += dataObjs[i].numAdded;
+                    currCount += dataObjs[i].quantity;
                     updatedCartState.push({
-                        sku: dataObjs[i].skuAdded,
-                        quantity: dataObjs[i].numAdded,
-                        shoeName: dataObjs[i].shoeName,
-                        shoePrice: dataObjs[i].shoePrice,
+                        sku: dataObjs[i].sku,
+                        quantity: dataObjs[i].quantity,
+                        shoeName: dataObjs[i].name,
+                        shoePrice: dataObjs[i].price,
                     });
                 }
             }
@@ -86,11 +88,11 @@ export default function CartReducer(state = initState, action) {
             updatedCartState = state.cartState
                 .map((obj) => {
                     for (var dataObj in dataObjs) {
-                        if (dataObj.skuRemoved === obj.sku) {
-                            currCount = Math.max(0, currCount - dataObj.numRemoved);
+                        if (dataObj.sku === obj.sku) {
+                            currCount = Math.max(0, currCount - dataObj.quantity);
                             return {
                                 ...obj,
-                                quantity: obj.quantity - dataObj.numRemoved,
+                                quantity: obj.quantity - dataObj.quantity,
                             };
                         }
                     }

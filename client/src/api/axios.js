@@ -2,8 +2,6 @@ import axios from "axios";
 import store from "../store";
 import { LoginEventCreator } from "../actions/LoginEvent";
 
-const triggerLogin = LoginEventCreator.login;
-
 var instance = axios.create({
     baseURL: "http://localhost:8000/",
 });

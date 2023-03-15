@@ -59,7 +59,6 @@ const ShopPage = (props) => {
                 withCredentials: true,
             })
             .then((res) => {
-                console.log("response data --> ", res.data);
                 let shoeInfo = res.data.shoeInfo;
                 shoeInfo.forEach((obj) => {
                     obj.selected_quantity = 1;
@@ -69,65 +68,77 @@ const ShopPage = (props) => {
             .catch((error) => {
                 console.error("ERROR --> ", error.response);
             });
-        setAppInit(true);
     }, [accessToken, email, loadShoes, shoeInfo, appInit]);
 
+    const initCart = useCallback(async () => {
+        if (appInit) {
+            return;
+        }
+        await axios
+            .get("/initCart", {
+                headers: { "Content-Type": "application/json" },
+                withCredentials: true,
+            })
+            .then(async (res) => {
+                if (res.status === 304) {
+                    console.log(` cartInit 304 --> ${JSON.stringify(res)}`);
+                }
+                if (!appInit) {
+                    await axios
+                        .get("/cartContents", {
+                            headers: { "Content-Type": "application/json" },
+                            withCredentials: true,
+                            params: {
+                                at: accessToken,
+                            },
+                        })
+                        .then((res) => {
+                            console.log(` res --> ${JSON.stringify(res)}`);
+                            if (!appInit && cartState.length === 0) {
+                                setAppInit(true);
+                                addManyToCartRdx(cartState, res.data.cartContents);
+                            } else {
+                                console.log("cart already initialized, nothing added to redux state.");
+                            }
+                        })
+                        .catch((err) => {
+                            console.error(`ERROR (fetchCartContents) --> ${err.res.errText}`);
+                            return null;
+                        });
+                }
+            })
+            .catch((err) => {
+                console.error(`initCart error: ${err}`);
+            });
+
+        return;
+    }, [accessToken, addManyToCartRdx, appInit, cartState]);
+
     const initLogin = useCallback(async () => {
-        if (isLoggedIn && !appInit) {
+        if (!isLoggedIn) {
             await axios
-                .get("/initCart", {
+                .get("/refreshToken", {
                     headers: { "Content-Type": "application/json" },
                     withCredentials: true,
                 })
                 .then(async (res) => {
-                    console.log(`here! status is ${res.status}`);
-                    if (res.status === 200) {
-                        await axios
-                            .get("/cartContents", {
-                                headers: { "Content-Type": "application/json" },
-                                withCredentials: true,
-                                params: {
-                                    at: accessToken,
-                                },
-                            })
-                            .then((res) => {
-                                console.log(`JSON response ---> ${JSON.stringify(res)}`);
-                                console.log(`cart contents: ${JSON.stringify(res.data.cartContents)}`);
-                                addManyToCartRdx(cartState, res.data.cartContents);
-                            })
-                            .catch((err) => {
-                                console.error(`ERROR (fetchCartContents) --> ${err.res.errText}`);
-                                return null;
-                            });
+                    if (res.data.renewedAccessToken !== undefined) {
+                        triggerLogin({
+                            email: res.data.email,
+                            fname: res.data.fname,
+                            accessToken: res.data.renewedAccessToken,
+                        });
                     }
                 })
                 .catch((err) => {
-                    console.error(`initCart error: ${err}`);
+                    console.error(err.response.data);
                 });
-            return;
         }
-        await axios
-            .get("/refreshToken", {
-                headers: { "Content-Type": "application/json" },
-                withCredentials: true,
-            })
-            .then((res) => {
-                if (res.data.renewedAccessToken !== undefined) {
-                    triggerLogin({
-                        email: res.data.email,
-                        fname: res.data.fname,
-                        accessToken: res.data.renewedAccessToken,
-                    });
-                }
-            })
-            .catch((err) => {
-                console.error(err.response.data);
-            });
-    }, [accessToken, addManyToCartRdx, cartState, isLoggedIn, triggerLogin, appInit]);
+    }, [triggerLogin, isLoggedIn]);
 
     useEffect(() => {
-        initLogin().then(getShoes);
-    }, [initLogin, getShoes]);
+        initLogin().then(getShoes()).then(initCart());
+    }, [initLogin, getShoes, initCart]);
 
     const navBarButtons = isLoggedIn ? [<LogoutButton />, <ShopCartButton />] : [<LoginButton />, <SignupButton />, <ShopCartButton />];
     return (
