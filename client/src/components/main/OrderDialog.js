@@ -9,7 +9,7 @@ import DialogActions from "@mui/material/DialogActions";
 import DialogContent from "@mui/material/DialogContent";
 import DialogContentText from "@mui/material/DialogContentText";
 import ClearIcon from "@mui/icons-material/Clear";
-import { Box, Item } from "@mui/system";
+import { Box } from "@mui/system";
 import DialogTitle from "@mui/material/DialogTitle";
 import ATCButton from "../buttons/ATCButton";
 import { CartEventCreator } from "../../actions/CartEvent";
@@ -26,7 +26,7 @@ import "./css/OrderDialog.css";
 // };
 
 function OrderDialog(props, { classes }) {
-    const { dialogIsOpen, closeOrderDialog, cartState, clearCart } = props;
+    const { dialogIsOpen, closeOrderDialog, cartState, removeFromCart, accessToken } = props;
     return (
         <div className="order-dialog">
             <Dialog
@@ -58,7 +58,7 @@ function OrderDialog(props, { classes }) {
                             // const selectionQuantity = A.length;
                             console.log(JSON.stringify(orderObj));
                             return (
-                                <div>
+                                <div key={`orderObj-row-${idx}`}>
                                     <Box
                                         sx={{
                                             display: "grid",
@@ -74,9 +74,19 @@ function OrderDialog(props, { classes }) {
                                         <ATCButton index={idx} className="grid-item" />
                                         <IconButton
                                             onClick={async () => {
-                                                await axios.post("/clearCart", async (req, res) => {});
-                                                console.log(`selection ${orderObj.sku} cleared from cart`);
-                                                clearCart();
+                                                await axios
+                                                    .delete("/clearCartSelection", {
+                                                        headers: { "Content-Type": "application/json" },
+                                                        withCredentials: true,
+                                                        params: { at: accessToken, sku: orderObj.sku },
+                                                    })
+                                                    .then((res) => {
+                                                        removeFromCart(cartState, orderObj.sku, orderObj.quantity);
+                                                        console.log(`selection ${orderObj.sku} cleared from cart`);
+                                                    })
+                                                    .catch((err) => {
+                                                        console.error(`ERROR (clearCartSelection) --> ${JSON.stringify(err)}`);
+                                                    });
                                             }}>
                                             <ClearIcon />
                                         </IconButton>
@@ -104,6 +114,7 @@ const mapDispatchToProps = {
 const mapStateToProps = (state, props) => ({
     cartState: state && state.cart && state.cart.cartState,
     dialogIsOpen: state && state.dialog && state.dialog.isOpen,
+    accessToken: state && state.login && state.login.accessToken,
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(OrderDialog);

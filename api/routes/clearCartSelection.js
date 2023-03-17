@@ -5,12 +5,13 @@ var getCartId = require("../util/getCartId");
 const verifyAccessToken = require("../util/verifyAccessToken");
 var router = express.Router();
 
-router.post("/clearCartSelection", async (req, res) => {
-    var email = req.cookies.shoeDawgUserEmail || req.body.email;
+router.delete("/clearCartSelection", async (req, res) => {
+    var email = req.cookies.shoeDawgUserEmail;
     var refreshToken = req.cookies.shoeDawgRefreshToken;
 
-    var accessToken = req.params.at;
-    var sku = req.params.sku;
+    var accessToken = req.query.at;
+    var sku = req.query.sku;
+
     var isGoodAT = await verifyAccessToken(accessToken);
     if (!isGoodAT) {
         res.status(449).send({

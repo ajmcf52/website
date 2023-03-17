@@ -23,6 +23,7 @@ var addToCart = require("./routes/addToCart");
 var removeFromCart = require("./routes/removeFromCart");
 var clearCart = require("./routes/clearCart");
 var cartContents = require("./routes/cartContents");
+var clearCartSelection = require("./routes/clearCartSelection");
 
 var app = express();
 
@@ -56,6 +57,7 @@ app.use(addToCart);
 app.use(removeFromCart);
 app.use(clearCart);
 app.use(cartContents);
+app.use(clearCartSelection);
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {
