@@ -3,6 +3,7 @@ var jwt = require("jsonwebtoken");
 var authConfig = require("../config/authConfig");
 var connection = require("../config/connection");
 var cartInitUtil = require("./initCart");
+const verifyAccessToken = require("../util/verifyAccessToken");
 const confirmRefreshToken = require("../util/confirmRefreshToken");
 
 var router = express.Router();
@@ -11,19 +12,9 @@ router.get("/cartContents", async (req, res) => {
     var email = req.cookies.shoeDawgUserEmail;
     var accessToken = req.query.at;
     var refreshToken = req.cookies.shoeDawgRefreshToken;
-    if (accessToken === undefined) {
-        res.status(449).send({
-            errText: "Access Token is missing; please log in.",
-        });
-        return;
-    }
-    try {
-        jwt.verify(accessToken, authConfig.secret);
-    } catch (error) {
-        res.status(449).send({
-            errText: `Error while verifying access token: ${error}`,
-        });
-        return;
+    var isGoodAT = await verifyAccessToken(accessToken);
+    if (!isGoodAT) {
+        res.status(449).send({ errText: isGoodAT.errText });
     }
 
     if (refreshToken === undefined || email === undefined) {
