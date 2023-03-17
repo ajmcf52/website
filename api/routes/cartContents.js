@@ -15,6 +15,7 @@ router.get("/cartContents", async (req, res) => {
     var isGoodAT = await verifyAccessToken(accessToken);
     if (!isGoodAT) {
         res.status(449).send({ errText: isGoodAT.errText });
+        return;
     }
 
     if (refreshToken === undefined || email === undefined) {

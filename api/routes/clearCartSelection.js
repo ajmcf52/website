@@ -10,6 +10,7 @@ router.post("/clearCartSelection", async (req, res) => {
     var refreshToken = req.cookies.shoeDawgRefreshToken;
 
     var accessToken = req.params.at;
+    var sku = req.params.sku;
     var isGoodAT = await verifyAccessToken(accessToken);
     if (!isGoodAT) {
         res.status(449).send({
@@ -40,10 +41,10 @@ router.post("/clearCartSelection", async (req, res) => {
         return;
     }
 
-    var sql = `DELETE FROM CART_DETAILS WHERE cart_id=?`;
-    await (await connection).execute(sql, [cartId]);
+    var sql = `DELETE FROM CART_DETAILS WHERE cart_id=? AND sku=?`;
+    await (await connection).execute(sql, [cartId, sku]);
 
-    res.status(200).send("Cart has been cleared.");
+    res.status(200).send("Cart selection has been cleared.");
 });
 
 module.exports = router;
