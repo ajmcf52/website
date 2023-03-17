@@ -1,0 +1,30 @@
+.order-dialog {
+    position: absolute;
+    min-width: 70%;
+    min-height: 70%;
+}
+
+.dialog-title .dialog-content {
+    position: relative;
+}
+
+.css-1t1j96h-MuiPaper-root-MuiDialog-paper {
+    position: absolute;
+    width: 70%;
+    min-height: 80%;
+    justify-content: space-between;
+}
+
+.css-hlj6pa-MuiDialogActions-root {
+    align-self: flex-end;
+}
+
+.order-item-grid {
+    display: grid;
+}
+
+.grid-item {
+    color: #c0c6cf;
+    background-color: #232b38;
+    border-radius: 4px;
+}
