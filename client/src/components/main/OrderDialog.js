@@ -10,6 +10,7 @@ import DialogContent from "@mui/material/DialogContent";
 import DialogContentText from "@mui/material/DialogContentText";
 import ClearIcon from "@mui/icons-material/Clear";
 import { Box } from "@mui/system";
+import OrderSummary from "./OrderSummary";
 import DialogTitle from "@mui/material/DialogTitle";
 import ATCButton from "../buttons/ATCButton";
 import { CartEventCreator } from "../../actions/CartEvent";
@@ -28,7 +29,7 @@ import "./css/OrderDialog.css";
 function OrderDialog(props, { classes }) {
     const { dialogIsOpen, closeOrderDialog, cartState, removeFromCart, accessToken } = props;
     return (
-        <div className="order-dialog">
+        <div className="order-dialog-ctn">
             <Dialog
                 className="order-dialog"
                 open={dialogIsOpen}
@@ -64,14 +65,16 @@ function OrderDialog(props, { classes }) {
                                             display: "grid",
                                             gridTemplateColumns: "3fr 1fr 24% 1fr 2fr 1fr",
                                             gridTemplateRows: "1fr",
-                                            textAlign: "center",
+                                            //textAlign: "center",
+                                            alignItems: "center",
+                                            justifyItems: "center",
                                         }}>
-                                        <span className="item-name grid-item">{orderObj.shoeName}</span>
+                                        <span className="item item-name grid-item">{orderObj.shoeName}</span>
 
-                                        <span className="item-sku grid-item">{`(${orderObj.sku})`}</span>
+                                        <span className="item item-sku grid-item">{`(${orderObj.sku})`}</span>
                                         <span> </span>
-                                        <span className="item-price grid-item">{orderObj.shoePrice}</span>
-                                        <ATCButton index={idx} className="grid-item" />
+                                        <span className="item item-price grid-item">{orderObj.shoePrice}</span>
+                                        <ATCButton index={idx} className="grid-item atc-button" />
                                         <IconButton
                                             onClick={async () => {
                                                 await axios
@@ -95,6 +98,7 @@ function OrderDialog(props, { classes }) {
                             );
                         })}
                     </div>
+                    <OrderSummary className="order-summary" />
                 </DialogContent>
                 <DialogActions>
                     <Button className="submit-order-button">Submit Order</Button>

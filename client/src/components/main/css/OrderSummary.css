@@ -1,0 +1,17 @@
+.order-summary {
+    border-style: inset;
+    min-height: 40em;
+    min-width: 45em;
+    background-color: #32362a;
+    color: #ebedb2;
+}
+
+.order-obj {
+    display: flex;
+    justify-content: space-between;
+}
+
+.order-math {
+    min-width: 90em;
+    min-height: 75em;
+}
