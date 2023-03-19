@@ -3,12 +3,14 @@ import { CartEventType } from "../actions/CartEvent";
 const initState = {
     cartState: [],
     itemCount: 0,
+    subtotal: 0,
 };
 export default function CartReducer(state = initState, action) {
     let updatedCartState = undefined;
     const oldCount = state.itemCount;
     let currCount = state.itemCount;
     let skuFound = false;
+    let currTotal = state.subtotal;
 
     switch (action.type) {
         case CartEventType.addToCart:
@@ -26,6 +28,7 @@ export default function CartReducer(state = initState, action) {
                 ...state,
                 cartState: updatedCartState,
                 itemCount: currCount + action.quantity,
+                subtotal: currTotal + action.price * action.quantity,
             };
 
         case CartEventType.removeFromCart:
@@ -43,6 +46,7 @@ export default function CartReducer(state = initState, action) {
                 ...state,
                 cartState: updatedCartState,
                 itemCount: Math.max(0, oldCount - action.quantity),
+                subtotal: Math.max(0, currTotal - action.price * action.quantity),
             };
 
         case CartEventType.addMany:
@@ -59,6 +63,7 @@ export default function CartReducer(state = initState, action) {
                     if (dataObj.sku === obj.sku) {
                         skuFoundArr[i] = true;
                         currCount += dataObj.quantity;
+                        currTotal += dataObj.price * dataObj.quantity;
                         return {
                             ...obj,
                             quantity: obj.quantity + dataObj.quantity,
@@ -72,6 +77,7 @@ export default function CartReducer(state = initState, action) {
             for (var i = 0; i < dataObjs.length; i++) {
                 if (!skuFoundArr[i]) {
                     currCount += dataObjs[i].quantity;
+                    currTotal += dataObjs[i].price * dataObjs[i].quantity;
                     updatedCartState.push({
                         sku: dataObjs[i].sku,
                         quantity: dataObjs[i].quantity,
@@ -80,7 +86,7 @@ export default function CartReducer(state = initState, action) {
                     });
                 }
             }
-            return { ...state, cartState: updatedCartState, itemCount: currCount };
+            return { ...state, cartState: updatedCartState, itemCount: currCount, subtotal: currTotal };
 
         case CartEventType.removeMany:
             dataObjs = action.dataObjs;
@@ -90,6 +96,7 @@ export default function CartReducer(state = initState, action) {
                     for (var dataObj in dataObjs) {
                         if (dataObj.sku === obj.sku) {
                             currCount = Math.max(0, currCount - dataObj.quantity);
+                            currTotal = Math.max(0, currTotal - dataObj.price * dataObj.quantity);
                             return {
                                 ...obj,
                                 quantity: obj.quantity - dataObj.quantity,
@@ -103,6 +110,7 @@ export default function CartReducer(state = initState, action) {
                 ...state,
                 cartState: updatedCartState,
                 itemCount: currCount,
+                subtotal: currTotal,
             };
 
         case CartEventType.clearCart:
@@ -110,6 +118,7 @@ export default function CartReducer(state = initState, action) {
                 ...state,
                 cartState: [],
                 itemCount: 0,
+                subtotal: 0,
             };
 
         default:

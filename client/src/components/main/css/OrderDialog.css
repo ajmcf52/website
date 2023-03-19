@@ -2,10 +2,15 @@
     position: absolute;
     min-width: 70%;
     min-height: 70%;
+    background: rgb(34, 193, 195);
+    background: linear-gradient(0deg, rgba(34, 193, 195, 1) 0%, rgba(253, 187, 45, 1) 100%);
 }
 
 .dialog-title .dialog-content {
     position: relative;
+}
+
+.order-dialog-ctn {
 }
 
 .css-1t1j96h-MuiPaper-root-MuiDialog-paper {
@@ -21,10 +26,25 @@
 
 .order-item-grid {
     display: grid;
+    border-style: inset;
+    min-height: 20vh;
+    max-height: 20vh;
+    overflow-x: auto;
+    overflow-y: hidden;
+    white-space: nowrap;
 }
 
 .grid-item {
     color: #c0c6cf;
     background-color: #232b38;
     border-radius: 4px;
+}
+
+.item {
+    padding: 3px;
+}
+
+.item-price {
+    position: relative;
+    right: 20%;
 }

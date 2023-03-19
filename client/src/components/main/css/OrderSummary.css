@@ -15,3 +15,7 @@
     min-width: 90em;
     min-height: 75em;
 }
+
+.css-1p823my-MuiListItem-root {
+    justify-content: space-between;
+}

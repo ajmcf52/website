@@ -25,11 +25,12 @@ const CartEventCreator = {
         cartState,
         dataObjs,
     }),
-    removeFromCart: (cartState, sku, quantity) => ({
+    removeFromCart: (cartState, sku, quantity, price) => ({
         type: CartEventType.removeFromCart,
         cartState,
         sku,
         quantity,
+        price,
     }),
     clearCart: (cartState) => ({
         type: CartEventType.clearCart,

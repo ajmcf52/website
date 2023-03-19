@@ -84,7 +84,7 @@ function OrderDialog(props, { classes }) {
                                                         params: { at: accessToken, sku: orderObj.sku },
                                                     })
                                                     .then((res) => {
-                                                        removeFromCart(cartState, orderObj.sku, orderObj.quantity);
+                                                        removeFromCart(cartState, orderObj.sku, orderObj.quantity, orderObj.shoePrice);
                                                         console.log(`selection ${orderObj.sku} cleared from cart`);
                                                     })
                                                     .catch((err) => {
