@@ -1,14 +1,17 @@
 import axios from "../api/axios";
 
-export const fetchCartContents = async () => {
+export const fetchCartContents = async (accessToken) => {
+    console.log(`AT --> ${accessToken}`);
     await axios
         .get("/cartContents", {
             headers: { "Content-Type": "application/json" },
             withCredentials: true,
+            params: {
+                at: accessToken,
+            },
         })
         .then((res) => {
-            console.log(`cart contents: ${res.cartContents}`);
-            return res.cartContents;
+            return Promise.resolve(res);
         })
         .catch((err) => {
             console.error(`ERROR (fetchCartContents) --> ${err.res.errText}`);

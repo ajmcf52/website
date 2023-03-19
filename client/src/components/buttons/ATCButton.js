@@ -12,8 +12,8 @@ const ATCButton = (props) => {
                 onClick={() => {
                     const sku = cartState[index].sku;
                     const quantity = 1;
-                    const name = cartState[index].name;
-                    const price = cartState[index].price;
+                    const name = cartState[index].shoeName;
+                    const price = cartState[index].shoePrice;
                     addToCartRdx(cartState, sku, quantity, name, price);
                 }}>
                 {"+"}
@@ -27,7 +27,8 @@ const ATCButton = (props) => {
                 onClick={() => {
                     const sku = cartState[index].sku;
                     const quantity = 1;
-                    removeFromCart(cartState, sku, quantity);
+                    const price = cartState[index].shoePrice;
+                    removeFromCart(cartState, sku, quantity, price);
                 }}>
                 {"-"}
             </button>

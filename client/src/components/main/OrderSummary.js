@@ -55,7 +55,7 @@ const OrderSummary = (props) => {
                             {cartState.map((orderObj, idx) => {
                                 return (
                                     <FlexedItem key={`order-item-${idx}`} className="order-obj">
-                                        <DescriptorText>{orderObj.shoeName}</DescriptorText>
+                                        <DescriptorText>{`${orderObj.shoeName} (${orderObj.quantity}x)`}</DescriptorText>
                                         <PriceText>{`$${orderObj.shoePrice}`}</PriceText>
                                     </FlexedItem>
                                 );

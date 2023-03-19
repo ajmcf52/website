@@ -42,12 +42,6 @@ function OrderDialog(props, { classes }) {
                     hint: stick a div in here with "display: grid" to hold the order contents
                     you can also use another grid for the order summary math in the bottom-right
 
-                    props are:
-                    -name
-                    -quantity
-                    -sku
-                    -price
-
                      */}
 
                     {
