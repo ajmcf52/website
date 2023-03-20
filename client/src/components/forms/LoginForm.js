@@ -1,12 +1,7 @@
 import React, { useRef, useState, useEffect, useContext } from "react";
 import { connect } from "react-redux";
 import { useNavigate } from "react-router-dom";
-import {
-    FormControlLabel,
-    Checkbox,
-    createStyles,
-    Typography,
-} from "@mui/material";
+import { FormControlLabel, Checkbox, createStyles, Typography } from "@mui/material";
 import { StyledField } from "../misc/StyledField";
 import AuthContext from "../../context/AuthProvider";
 import { LoginEventCreator } from "../../actions/LoginEvent";
@@ -22,7 +17,9 @@ const errorMsgStyle = (shouldDisplayError) =>
         },
     });
 
-const LoginForm = ({ triggerLogin }) => {
+const LoginForm = (props) => {
+    const { triggerLogin, globalError } = props;
+
     const navigate = useNavigate();
     const { setAuth } = useContext(AuthContext);
     const emailRef = useRef();
@@ -79,13 +76,7 @@ const LoginForm = ({ triggerLogin }) => {
 
     return (
         <section className="form-container login-color">
-            <form
-                name="login"
-                method="post"
-                className="form-login shadow-layering"
-                action=""
-                encType="multipart/form-data"
-                onSubmit={handleSubmit}>
+            <form name="login" method="post" className="form-login shadow-layering" action="" encType="multipart/form-data" onSubmit={handleSubmit}>
                 <h1 className="title">Login</h1>
                 <div ref={emailRef} className="input-container">
                     <StyledField
@@ -116,14 +107,7 @@ const LoginForm = ({ triggerLogin }) => {
                         type={showPword ? "text" : "password"}
                     />
                     <FormControlLabel
-                        control={
-                            <Checkbox
-                                size="small"
-                                disableRipple
-                                checked={showPword}
-                                onChange={() => setShowPword(!showPword)}
-                            />
-                        }
+                        control={<Checkbox size="small" disableRipple checked={showPword} onChange={() => setShowPword(!showPword)} />}
                         label={
                             <Typography
                                 style={{
@@ -139,9 +123,7 @@ const LoginForm = ({ triggerLogin }) => {
                         labelPlacement="start"
                     />
                 </div>
-                <div
-                    className="error-msg"
-                    style={errorMsgStyle(errorText !== " ").root}>
+                <div className="error-msg" style={errorMsgStyle(errorText !== " ").root}>
                     <Typography
                         ref={errorRef}
                         className="css-ahj2mt-MuiTypography-root"
@@ -155,10 +137,7 @@ const LoginForm = ({ triggerLogin }) => {
                         {errorText}
                     </Typography>
                 </div>
-                <input
-                    type="submit"
-                    className="submit-button"
-                    value="Submit"></input>
+                <input type="submit" className="submit-button" value="Submit"></input>
             </form>
         </section>
     );
@@ -168,4 +147,9 @@ const mapDispatchToProps = {
     triggerLogin: LoginEventCreator.login,
 };
 
-export default connect(null, mapDispatchToProps)(LoginForm);
+const mapStateToProps = (state) => ({
+    globalError: state && state.error && state.error.globalError,
+    errorType: state && state.error && state.error.errorType,
+});
+
+export default connect(mapStateToProps, mapDispatchToProps)(LoginForm);

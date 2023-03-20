@@ -11,14 +11,6 @@ var generateTokens = require("../util/generateTokens");
 var confirmRefreshToken = require("../util/confirmRefreshToken");
 
 var router = express.Router();
-
-/**
-In order for this route to work as intended, the user
-email must either be accessible via req.body or req.cookies;
-we expect a refresh token in req.cookies, but if there isn't
-one there, we can use the user's email to search the DB for
-an existing RT. If no existing RT can be sourced, we send back a 403.
-*/
 router.get("/refreshToken", async (req, res) => {
     const { accessToken } = req.body;
     try {
@@ -83,20 +75,29 @@ router.get("/refreshToken", async (req, res) => {
             maxAge: authConfig.jwtRefreshExpiration * 1000,
             httpOnly: true,
             sameSite: "lax",
+            path: "/",
+            origin: "localhost",
+            domain: "localhost:8000",
+            secure: false,
         });
         res.cookie("shoeDawgUserEmail", email, {
             maxAge: authConfig.jwtRefreshExpiration * 1000,
             httpOnly: true,
             sameSite: "lax",
+            path: "/",
+            origin: "localhost",
+            domain: "localhost:8000",
+            secure: false,
         });
 
-        console.log("keeping the same refresh token.");
+        console.log("\nkeeping the same refresh token.\n");
 
         res.status(200).send({
             message: "AT refreshed.",
             email,
             fname,
             renewedAccessToken,
+            secure: false,
         });
     } else {
         // if we enter here, RT has less than a week left, so we renew.
@@ -124,11 +125,19 @@ router.get("/refreshToken", async (req, res) => {
             maxAge: authConfig.jwtRefreshExpiration * 1000,
             httpOnly: true,
             sameSite: "lax",
+            path: "/",
+            origin: "localhost",
+            domain: "localhost:8000",
+            secure: false,
         });
         res.cookie("shoeDawgUserEmail", email, {
             maxAge: authConfig.jwtRefreshExpiration * 1000,
             httpOnly: true,
             sameSite: "lax",
+            path: "/",
+            origin: "localhost",
+            domain: "localhost:8000",
+            secure: false,
         });
         res.status(200).send({
             message: "Token refreshed.",
