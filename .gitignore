@@ -4,6 +4,8 @@
 /node_modules
 /.pnp
 .pnp.js
+shoedawg/client/node_modules
+shoedawg/api/node_modules
 
 # testing
 /coverage
